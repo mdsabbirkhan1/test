@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Force Tools Test</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <header class="header">
+        <nav class="nav">
+            <div class="nav-container">
+                <div class="nav-brand">
+                    <span class="brand-text">Tools Hub</span>
+                </div>
+                <div class="nav-links">
+                    <a href="#" class="nav-link" data-page="home" onclick="showHome()">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </a>
+                    <a href="#" class="nav-link active" data-page="tools" onclick="showTools()">
+                        <i class="fas fa-toolbox"></i>
+                        <span>Tools</span>
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <!-- Tools Page -->
+        <div id="toolsPage" class="page active">
+            <!-- Tools Header -->
+            <section class="tools-header">
+                <div class="section-container">
+                    <h1>All Tools - Force Test</h1>
+                    <p>This page forces tools to display</p>
+                    
+                    <button onclick="forceLoadTools()" style="background: #10b981; color: white; border: none; padding: 10px 20px; border-radius: 6px; margin: 10px 5px;">
+                        Force Load Tools
+                    </button>
+                    <button onclick="clearAndLoad()" style="background: #ef4444; color: white; border: none; padding: 10px 20px; border-radius: 6px; margin: 10px 5px;">
+                        Clear & Reload
+                    </button>
+                </div>
+            </section>
+
+            <!-- Tools Content -->
+            <section class="tools-content">
+                <div class="section-container">
+                    <div id="toolsContainer" class="tools-container">
+                        <div style="padding: 20px; background: #f0f9ff; border: 1px solid #0ea5e9; border-radius: 8px; margin: 20px 0;">
+                            <h3 style="margin: 0 0 10px 0; color: #0369a1;">🔧 Force Tools Test</h3>
+                            <p style="margin: 0; color: #0369a1;">This page will force load and display tools to test the functionality.</p>
+                        </div>
+                        <div id="tools-output"></div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        console.log('Force tools test page loaded');
+        
+        function showTools() {
+            console.log('showTools called');
+            document.getElementById('toolsPage').classList.add('active');
+            forceLoadTools();
+        }
+        
+        function showHome() {
+            window.location.href = '/';
+        }
+        
+        async function forceLoadTools() {
+            console.log('Force loading tools...');
+            const output = document.getElementById('tools-output');
+            
+            try {
+                // Add loading indicator
+                output.innerHTML = '<div style="text-align: center; padding: 40px;"><i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: #6366f1;"></i><br><br>Loading tools...</div>';
+                
+                const response = await fetch('./data/sample-tools.json');
+                console.log('Response:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const tools = await response.json();
+                console.log('Loaded tools:', tools.length);
+                
+                // Create tools grid
+                let html = '<div class="tools-grid">';
+                
+                tools.forEach(tool => {
+                    html += `
+                        <div class="tool-card">
+                            <div class="tool-header">
+                                <div class="tool-icon-card" style="background: #6366f1;">
+                                    <i class="${tool.icon}"></i>
+                                </div>
+                                <div class="tool-info">
+                                    <h3>${tool.name}</h3>
+                                    <span class="tool-category">${tool.category}</span>
+                                </div>
+                            </div>
+                            <div class="tool-description">
+                                ${tool.description}
+                            </div>
+                            <div class="tool-footer">
+                                <a href="${tool.link}" target="_blank" class="tool-button">
+                                    <i class="fas fa-external-link-alt"></i>
+                                    Open Tool
+                                </a>
+                                ${tool.rating ? `<span class="tool-rating">★ ${tool.rating}</span>` : ''}
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                html += '</div>';
+                output.innerHTML = html;
+                
+                console.log('Tools displayed successfully');
+                
+            } catch (error) {
+                console.error('Error loading tools:', error);
+                output.innerHTML = `
+                    <div style="text-align: center; padding: 40px; background: #fef2f2; border: 1px solid #ef4444; border-radius: 8px; color: #dc2626;">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 15px;"></i>
+                        <h3>Error Loading Tools</h3>
+                        <p>${error.message}</p>
+                        <button onclick="forceLoadTools()" style="background: #ef4444; color: white; border: none; padding: 8px 16px; border-radius: 4px; margin-top: 10px;">
+                            Try Again
+                        </button>
+                    </div>
+                `;
+            }
+        }
+        
+        function clearAndLoad() {
+            document.getElementById('tools-output').innerHTML = '';
+            setTimeout(forceLoadTools, 500);
+        }
+        
+        // Auto-load on page ready
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('DOM ready, force loading tools...');
+            setTimeout(forceLoadTools, 1000);
+        });
+    </script>
+</body>
+</html>

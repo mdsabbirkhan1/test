@@ -453,6 +453,34 @@ body {
     display: block;
 }
 
+/* Ensure tools page content is properly displayed */
+#toolsPage.active {
+    display: block !important;
+}
+
+#toolsPage.active .tools-content {
+    display: block !important;
+    position: relative;
+    z-index: 1;
+}
+
+#toolsPage.active #toolsContainer {
+    display: block !important;
+    position: relative;
+    z-index: 2;
+    background: var(--bg-primary) !important;
+    min-height: 400px;
+}
+
+/* Hide hero visual and other home page elements when on tools page */
+#toolsPage.active .hero-visual,
+#toolsPage.active .floating-tools,
+#toolsPage.active .stats,
+#toolsPage.active .categories-preview,
+#toolsPage.active .features {
+    display: none !important;
+}
+
 /* Hero Section */
 .hero {
     padding: var(--space-3xl) 0;
@@ -631,11 +659,24 @@ body {
     color: var(--text-secondary);
 }
 
+/* Tools Content Section */
+.tools-content {
+    padding: var(--space-2xl) 0;
+    min-height: 500px;
+}
+
+.tools-header {
+    padding: var(--space-2xl) 0 var(--space-lg);
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+}
+
 /* Tools Grid */
 .tools-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: var(--space-lg);
+    margin-top: var(--space-lg);
 }
 
 .tool-card {

@@ -316,6 +316,13 @@ class ToolsManager {
         }
 
         console.log('Tools container found:', container);
+        
+        // Remove loading placeholder if it exists
+        const placeholder = container.querySelector('#tools-placeholder');
+        if (placeholder) {
+            placeholder.remove();
+            console.log('Removed tools placeholder');
+        }
 
         if (this.filteredTools.length === 0) {
             console.log('No filtered tools, showing no tools message');
