@@ -813,6 +813,49 @@ body {
     line-height: 1.5;
 }
 
+/* Categories Error States */
+.no-categories,
+.categories-error {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: var(--space-3xl);
+    background: var(--bg-secondary);
+    border-radius: 1rem;
+    border: 1px solid var(--border-color);
+}
+
+.no-categories i,
+.categories-error i {
+    font-size: 3rem;
+    color: var(--text-muted);
+    margin-bottom: var(--space-lg);
+}
+
+.categories-error i {
+    color: #ef4444;
+}
+
+.no-categories h3,
+.categories-error h3 {
+    margin-bottom: var(--space-md);
+    color: var(--text-primary);
+}
+
+.no-categories p,
+.categories-error p {
+    color: var(--text-secondary);
+    margin-bottom: var(--space-lg);
+}
+
+.error-card {
+    border-color: #ef4444 !important;
+    background: #fef2f2 !important;
+}
+
+.error-card h3 {
+    color: #dc2626 !important;
+}
+
 /* Features Grid */
 .features-grid {
     display: grid;

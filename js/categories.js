@@ -7,37 +7,96 @@ class CategoriesManager {
 
     async init() {
         try {
+            console.log('Initializing CategoriesManager...');
+            
+            // Check dependencies
+            if (!window.storage) {
+                console.warn('Storage not available, waiting...');
+                await this.waitForStorage();
+            }
+            
             await this.loadCategories();
             this.setupEventListeners();
             this.displayCategories();
+            console.log('CategoriesManager initialization complete');
         } catch (error) {
             console.error('Failed to initialize categories manager:', error);
+            // Use fallback initialization
+            this.initializeFallback();
         }
     }
 
-    async loadCategories() {
-        // Try to load from cache first
-        const cachedCategories = storage.getCachedData('categories');
-        if (cachedCategories && storage.isCacheValid()) {
-            this.categories = cachedCategories;
-            return;
+    async waitForStorage() {
+        const maxWait = 5000; // 5 seconds
+        const checkInterval = 100; // 100ms
+        let waited = 0;
+
+        while (!window.storage && waited < maxWait) {
+            await new Promise(resolve => setTimeout(resolve, checkInterval));
+            waited += checkInterval;
         }
 
-        // Load from data file
+        if (!window.storage) {
+            console.error('Storage still not available after waiting');
+        }
+    }
+
+    initializeFallback() {
+        console.log('Initializing categories with fallback...');
+        this.categories = this.getDefaultCategories();
+        this.setupEventListeners();
+        this.displayCategories();
+    }
+
+    async loadCategories() {
         try {
-            const response = await fetch('./data/categories.json');
-            if (!response.ok) {
-                throw new Error('Failed to fetch categories data');
+            // Try to load from cache first
+            let cachedCategories = null;
+            if (window.storage) {
+                try {
+                    cachedCategories = storage.getCachedData('categories');
+                } catch (cacheError) {
+                    console.warn('Error accessing cache:', cacheError);
+                }
             }
             
-            this.categories = await response.json();
+            if (cachedCategories && cachedCategories.length > 0) {
+                console.log('Loading categories from cache:', cachedCategories.length);
+                this.categories = cachedCategories;
+                return;
+            }
+
+            // Load from data file
+            console.log('Fetching categories from server...');
+            const response = await fetch('./data/categories.json');
+            console.log('Categories fetch response:', response.status);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            
+            const categories = await response.json();
+            console.log('Raw categories data:', categories);
+            
+            if (!Array.isArray(categories) || categories.length === 0) {
+                throw new Error('No valid categories found in response');
+            }
+            
+            this.categories = categories;
             
             // Cache the categories
-            storage.setCachedData('categories', this.categories);
+            if (window.storage) {
+                try {
+                    storage.setCachedData('categories', this.categories);
+                } catch (cacheError) {
+                    console.warn('Error caching categories:', cacheError);
+                }
+            }
             
-            console.log(`Loaded ${this.categories.length} categories`);
+            console.log(`Successfully loaded ${this.categories.length} categories`);
         } catch (error) {
             console.error('Error loading categories:', error);
+            console.log('Using default categories as fallback');
             // Fallback to default categories
             this.categories = this.getDefaultCategories();
         }
@@ -87,43 +146,110 @@ class CategoriesManager {
     }
 
     displayCategories() {
-        this.displayCategoriesGrid();
-        this.populateCategoryFilter();
-        this.displayFooterCategories();
+        try {
+            console.log('Displaying categories, count:', this.categories.length);
+            this.displayCategoriesGrid();
+            this.populateCategoryFilter();
+            this.displayFooterCategories();
+            console.log('Categories display completed successfully');
+        } catch (error) {
+            console.error('Error displaying categories:', error);
+            this.showCategoriesError();
+        }
     }
 
     displayCategoriesGrid() {
         const container = Utils.$('#categoriesGrid');
-        if (!container) return;
+        if (!container) {
+            console.error('Categories grid container not found');
+            return;
+        }
 
-        const categoriesWithCounts = this.getCategoriesWithToolCounts();
-        
-        let html = '';
-        categoriesWithCounts.forEach((category, index) => {
-            html += this.createCategoryCard(category, index);
-        });
+        console.log('Categories container found, displaying grid...');
 
-        container.innerHTML = html;
-        this.animateCategoryCards();
+        if (this.categories.length === 0) {
+            container.innerHTML = `
+                <div class="no-categories">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h3>No Categories Available</h3>
+                    <p>Categories are still loading or there was an error.</p>
+                </div>
+            `;
+            return;
+        }
+
+        try {
+            const categoriesWithCounts = this.getCategoriesWithToolCounts();
+            
+            let html = '';
+            categoriesWithCounts.forEach((category, index) => {
+                html += this.createCategoryCard(category, index);
+            });
+
+            container.innerHTML = html;
+            this.animateCategoryCards();
+            console.log('Categories grid displayed successfully');
+        } catch (error) {
+            console.error('Error creating categories grid:', error);
+            this.showCategoriesGridError(container);
+        }
+    }
+
+    showCategoriesError() {
+        const container = Utils.$('#categoriesGrid');
+        if (container) {
+            this.showCategoriesGridError(container);
+        }
+    }
+
+    showCategoriesGridError(container) {
+        container.innerHTML = `
+            <div class="categories-error">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h3>Error Loading Categories</h3>
+                <p>There was a problem loading the categories. Please try refreshing the page.</p>
+                <button onclick="window.categoriesManager.refreshCategories()" class="btn-secondary">
+                    <i class="fas fa-refresh"></i>
+                    Retry
+                </button>
+            </div>
+        `;
     }
 
     createCategoryCard(category, index) {
-        const toolCount = this.getToolCountForCategory(category.id);
-        
-        return `
-            <div class="category-card fade-in" 
-                 data-category-id="${category.id}"
-                 style="animation-delay: ${index * 100}ms">
-                <div class="category-icon" style="background: ${category.color}">
-                    <i class="${category.icon}"></i>
+        try {
+            const toolCount = this.getToolCountForCategory(category.id);
+            const safeColor = category.color || '#6366f1';
+            const safeIcon = category.icon || 'fas fa-folder';
+            const safeName = Utils.escapeHtml(category.name || 'Unknown Category');
+            const safeDescription = Utils.escapeHtml(category.description || 'No description available');
+            
+            return `
+                <div class="category-card fade-in" 
+                     data-category-id="${category.id}"
+                     style="animation-delay: ${index * 100}ms">
+                    <div class="category-icon" style="background: ${safeColor}">
+                        <i class="${safeIcon}"></i>
+                    </div>
+                    <h3>${safeName}</h3>
+                    <div class="category-count">${toolCount} tool${toolCount !== 1 ? 's' : ''}</div>
+                    <div class="category-description">
+                        ${safeDescription}
+                    </div>
                 </div>
-                <h3>${Utils.escapeHtml(category.name)}</h3>
-                <div class="category-count">${toolCount} tool${toolCount !== 1 ? 's' : ''}</div>
-                <div class="category-description">
-                    ${Utils.escapeHtml(category.description)}
+            `;
+        } catch (error) {
+            console.error('Error creating category card for:', category, error);
+            return `
+                <div class="category-card error-card">
+                    <div class="category-icon" style="background: #ef4444">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <h3>Error</h3>
+                    <div class="category-description">Failed to load category</div>
                 </div>
-            </div>
-        `;
+            `;
+        }
     }
 
     populateCategoryFilter() {
@@ -185,10 +311,18 @@ class CategoriesManager {
     }
 
     getToolCountForCategory(categoryId) {
-        if (!window.toolsManager) return 0;
+        if (!window.toolsManager) {
+            console.log('ToolsManager not available for category count');
+            return 0;
+        }
         
-        const tools = window.toolsManager.getToolsByCategory(categoryId);
-        return tools.length;
+        try {
+            const tools = window.toolsManager.getToolsByCategory(categoryId);
+            return tools ? tools.length : 0;
+        } catch (error) {
+            console.error('Error getting tool count for category:', categoryId, error);
+            return 0;
+        }
     }
 
     animateCategoryCards() {
