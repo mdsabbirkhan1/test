@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Tools Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .tool { border: 1px solid #ccc; margin: 10px; padding: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Simple Tools Test</h1>
+    <div id="status">Loading...</div>
+    <div id="tools"></div>
+
+    <script>
+        console.log('Starting simple test...');
+        
+        fetch('./data/sample-tools.json')
+            .then(response => {
+                console.log('Response:', response.status);
+                return response.json();
+            })
+            .then(tools => {
+                console.log('Tools loaded:', tools.length);
+                document.getElementById('status').textContent = `Loaded ${tools.length} tools successfully!`;
+                
+                const container = document.getElementById('tools');
+                let html = '';
+                
+                tools.forEach(tool => {
+                    html += `
+                        <div class="tool">
+                            <h3>${tool.name}</h3>
+                            <p>Category: ${tool.category}</p>
+                            <p>${tool.description}</p>
+                            <a href="${tool.link}" target="_blank">Open Tool</a>
+                        </div>
+                    `;
+                });
+                
+                container.innerHTML = html;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('status').textContent = 'Error: ' + error.message;
+            });
+    </script>
+</body>
+</html>

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Direct Tools Test</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; }
+        .tools-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin-top: 20px; }
+        .tool-card { 
+            border: 1px solid #ddd; 
+            border-radius: 8px; 
+            padding: 20px; 
+            background: white; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        .tool-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .tool-header { display: flex; align-items: center; margin-bottom: 15px; }
+        .tool-icon { 
+            width: 40px; 
+            height: 40px; 
+            background: #6366f1; 
+            color: white; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            border-radius: 8px; 
+            margin-right: 15px; 
+            font-size: 18px;
+        }
+        .tool-title { font-size: 18px; font-weight: bold; margin: 0; }
+        .tool-category { 
+            background: #f3f4f6; 
+            color: #6b7280; 
+            padding: 4px 8px; 
+            border-radius: 12px; 
+            font-size: 12px; 
+            text-transform: uppercase; 
+            margin-left: auto;
+        }
+        .tool-description { color: #6b7280; margin-bottom: 15px; }
+        .tool-link { 
+            display: inline-block; 
+            padding: 8px 16px; 
+            background: #6366f1; 
+            color: white; 
+            text-decoration: none; 
+            border-radius: 6px; 
+            transition: background 0.2s;
+        }
+        .tool-link:hover { background: #5855eb; }
+        .badge { 
+            background: #10b981; 
+            color: white; 
+            padding: 4px 8px; 
+            border-radius: 4px; 
+            font-size: 11px; 
+            margin-left: 10px;
+        }
+        .rating { color: #f59e0b; margin-left: 10px; }
+        .status { 
+            padding: 15px; 
+            margin: 15px 0; 
+            border-radius: 6px; 
+            border-left: 4px solid #6366f1;
+            background: #f8fafc;
+        }
+        .error { border-left-color: #ef4444; background: #fef2f2; color: #dc2626; }
+        .success { border-left-color: #10b981; background: #f0fdf4; color: #047857; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🛠️ Direct Tools Test</h1>
+        <p>This page directly loads and displays tools to test the data loading mechanism.</p>
+        
+        <button onclick="loadAndDisplayTools()" style="padding: 10px 20px; background: #6366f1; color: white; border: none; border-radius: 6px; cursor: pointer;">
+            Load Tools
+        </button>
+        
+        <div id="status"></div>
+        <div id="tools-output"></div>
+    </div>
+
+    <script>
+        const statusDiv = document.getElementById('status');
+        const outputDiv = document.getElementById('tools-output');
+        
+        function addStatus(message, type = 'info') {
+            const div = document.createElement('div');
+            div.className = `status ${type}`;
+            div.innerHTML = `<strong>${new Date().toLocaleTimeString()}:</strong> ${message}`;
+            statusDiv.appendChild(div);
+            console.log(`[${type.toUpperCase()}] ${message}`);
+        }
+        
+        async function loadAndDisplayTools() {
+            outputDiv.innerHTML = '';
+            statusDiv.innerHTML = '';
+            
+            addStatus('Starting tools loading test...');
+            
+            try {
+                addStatus('Fetching data/sample-tools.json...');
+                const response = await fetch('./data/sample-tools.json');
+                
+                addStatus(`Response: ${response.status} ${response.statusText}`, response.ok ? 'success' : 'error');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const tools = await response.json();
+                addStatus(`Successfully loaded ${tools.length} tools`, 'success');
+                
+                // Display tools
+                const grid = document.createElement('div');
+                grid.className = 'tools-grid';
+                
+                tools.forEach((tool, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'tool-card';
+                    
+                    card.innerHTML = `
+                        <div class="tool-header">
+                            <div class="tool-icon">
+                                <i class="${tool.icon}"></i>
+                            </div>
+                            <div>
+                                <h3 class="tool-title">${tool.name}</h3>
+                                ${tool.badge ? `<span class="badge">${tool.badge}</span>` : ''}
+                                ${tool.rating ? `<span class="rating">★ ${tool.rating}</span>` : ''}
+                            </div>
+                            <div class="tool-category">${tool.category}</div>
+                        </div>
+                        <div class="tool-description">${tool.description}</div>
+                        <div>
+                            <a href="${tool.link}" target="_blank" class="tool-link" onclick="logClick('${tool.id}')">
+                                <i class="fas fa-external-link-alt"></i> Open Tool
+                            </a>
+                        </div>
+                    `;
+                    
+                    grid.appendChild(card);
+                    
+                    addStatus(`Added tool: ${tool.name}`);
+                });
+                
+                outputDiv.appendChild(grid);
+                addStatus(`Successfully displayed all ${tools.length} tools`, 'success');
+                
+            } catch (error) {
+                addStatus(`Error: ${error.message}`, 'error');
+                console.error('Full error:', error);
+                
+                // Try fallback
+                addStatus('Trying fallback tools...', 'info');
+                displayFallbackTools();
+            }
+        }
+        
+        function displayFallbackTools() {
+            const fallbackTools = [
+                {
+                    id: "test-json-formatter",
+                    name: "JSON Formatter (Fallback)",
+                    category: "development",
+                    icon: "fas fa-code",
+                    description: "Format and validate JSON data",
+                    link: "https://jsonformatter.org/",
+                    rating: 4.8,
+                    badge: "Test"
+                },
+                {
+                    id: "test-color-picker",
+                    name: "Color Picker (Fallback)",
+                    category: "design",
+                    icon: "fas fa-palette",
+                    description: "Pick and create color palettes",
+                    link: "https://coolors.co/",
+                    rating: 4.6,
+                    badge: "Test"
+                }
+            ];
+            
+            const grid = document.createElement('div');
+            grid.className = 'tools-grid';
+            
+            fallbackTools.forEach(tool => {
+                const card = document.createElement('div');
+                card.className = 'tool-card';
+                
+                card.innerHTML = `
+                    <div class="tool-header">
+                        <div class="tool-icon">
+                            <i class="${tool.icon}"></i>
+                        </div>
+                        <div>
+                            <h3 class="tool-title">${tool.name}</h3>
+                            <span class="badge">${tool.badge}</span>
+                            <span class="rating">★ ${tool.rating}</span>
+                        </div>
+                        <div class="tool-category">${tool.category}</div>
+                    </div>
+                    <div class="tool-description">${tool.description}</div>
+                    <div>
+                        <a href="${tool.link}" target="_blank" class="tool-link">
+                            <i class="fas fa-external-link-alt"></i> Open Tool
+                        </a>
+                    </div>
+                `;
+                
+                grid.appendChild(card);
+            });
+            
+            outputDiv.appendChild(grid);
+            addStatus('Fallback tools displayed', 'success');
+        }
+        
+        function logClick(toolId) {
+            addStatus(`Tool clicked: ${toolId}`, 'success');
+        }
+        
+        // Auto-load on page load
+        window.addEventListener('load', () => {
+            addStatus('Page loaded, auto-loading tools...');
+            setTimeout(loadAndDisplayTools, 500);
+        });
+    </script>
+</body>
+</html>

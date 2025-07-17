@@ -1,0 +1,959 @@
+// Tools Management System
+class ToolsManager {
+    constructor() {
+        console.log('ToolsManager constructor called');
+        this.tools = [];
+        this.filteredTools = [];
+        this.currentPage = 1;
+        this.toolsPerPage = 12;
+        this.currentCategory = '';
+        this.currentSort = 'usage';
+        this.currentView = 'grid';
+        this.isLoading = false;
+        this.isInitialized = false;
+        console.log('ToolsManager initialized, calling init()...');
+        this.init();
+    }
+
+    async init() {
+        console.log('ToolsManager.init() called');
+        try {
+            console.log('Loading tools...');
+            await this.loadTools();
+            console.log('Setting up event listeners...');
+            this.setupEventListeners();
+            console.log('Initializing view...');
+            this.initializeView();
+            this.isInitialized = true;
+            console.log('ToolsManager initialization complete');
+        } catch (error) {
+            console.error('Failed to initialize tools manager:', error);
+            Utils.showError('Failed to load tools');
+            // Try fallback initialization
+            this.initializeFallback();
+        }
+    }
+
+    initializeFallback() {
+        console.log('Initializing with fallback tools...');
+        this.tools = this.getFallbackTools();
+        this.setupEventListeners();
+        this.initializeView();
+        this.isInitialized = true;
+        console.log('Fallback initialization complete');
+    }
+
+    getFallbackTools() {
+        return [
+            {
+                "id": "json-formatter-fallback",
+                "name": "JSON Formatter",
+                "category": "development",
+                "icon": "fas fa-code",
+                "description": "Format and validate JSON data online",
+                "link": "https://jsonformatter.org/",
+                "rating": 4.8,
+                "badge": "Popular",
+                "features": ["Syntax highlighting", "Error detection"],
+                "pricing": "Free",
+                "dateAdded": "2024-01-15"
+            },
+            {
+                "id": "color-picker-fallback",
+                "name": "Color Picker",
+                "category": "design", 
+                "icon": "fas fa-palette",
+                "description": "Pick colors and create palettes",
+                "link": "https://coolors.co/",
+                "rating": 4.6,
+                "badge": "New",
+                "features": ["Color palettes", "Export options"],
+                "pricing": "Free",
+                "dateAdded": "2024-01-20"
+            },
+            {
+                "id": "password-generator-fallback",
+                "name": "Password Generator",
+                "category": "utilities",
+                "icon": "fas fa-key", 
+                "description": "Generate secure passwords",
+                "link": "https://passwordsgenerator.net/",
+                "rating": 4.9,
+                "badge": "Essential",
+                "features": ["Custom length", "Character sets"],
+                "pricing": "Free",
+                "dateAdded": "2024-01-10"
+            },
+            {
+                "id": "qr-generator-fallback",
+                "name": "QR Code Generator",
+                "category": "generators",
+                "icon": "fas fa-qrcode",
+                "description": "Create QR codes for various purposes",
+                "link": "https://qr-code-generator.com/",
+                "rating": 4.7,
+                "badge": "Popular",
+                "features": ["Multiple formats", "Custom colors"],
+                "pricing": "Free",
+                "dateAdded": "2024-01-25"
+            }
+        ];
+    }
+
+    async loadTools() {
+        this.isLoading = true;
+        console.log('Starting to load tools...');
+        
+        try {
+            // Try loading from cache first
+            const cachedTools = storage.getCachedData('tools');
+            if (cachedTools && cachedTools.length > 0) {
+                console.log('Loading tools from cache:', cachedTools.length);
+                this.tools = cachedTools;
+                this.isLoading = false;
+                return;
+            }
+
+            // Fetch from server
+            console.log('Fetching tools from server...');
+            const response = await fetch('./data/sample-tools.json');
+            console.log('Fetch response:', response.status, response.statusText);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            
+            const tools = await response.json();
+            console.log('Raw tools data:', tools);
+            
+            if (!Array.isArray(tools) || tools.length === 0) {
+                throw new Error('No valid tools found in response');
+            }
+            
+            this.tools = tools;
+            this.isLoading = false;
+            
+            // Cache the tools
+            storage.setCachedData('tools', this.tools);
+            
+            console.log(`Successfully loaded ${this.tools.length} tools:`, this.tools.map(t => t.name));
+        } catch (error) {
+            this.isLoading = false;
+            console.error('Error loading tools:', error);
+            Utils.showError(`Failed to load tools: ${error.message}`);
+            // Fallback to hardcoded tools if sample data fails
+            this.tools = this.getFallbackTools();
+            console.log('Using fallback tools:', this.tools.length);
+        }
+    }
+
+    setupEventListeners() {
+        // Category filter
+        const categoryFilter = Utils.$('#categoryFilter');
+        if (categoryFilter) {
+            categoryFilter.addEventListener('change', (e) => {
+                this.setCategory(e.target.value);
+            });
+        }
+
+        // Sort filter
+        const sortBy = Utils.$('#sortBy');
+        if (sortBy) {
+            sortBy.addEventListener('change', (e) => {
+                this.setSortBy(e.target.value);
+            });
+        }
+
+        // View toggles
+        const gridViewBtn = Utils.$('#gridViewBtn');
+        const listViewBtn = Utils.$('#listViewBtn');
+        
+        if (gridViewBtn) {
+            gridViewBtn.addEventListener('click', () => {
+                this.setView('grid');
+            });
+        }
+        
+        if (listViewBtn) {
+            listViewBtn.addEventListener('click', () => {
+                this.setView('list');
+            });
+        }
+
+        // Page navigation buttons
+        document.addEventListener('click', (e) => {
+            if (e.target.matches('[data-page="tools"]') || e.target.closest('[data-page="tools"]')) {
+                this.showToolsPage();
+            }
+        });
+    }
+
+    initializeView() {
+        // Load user preferences
+        this.currentView = storage.getSetting('view') || 'grid';
+        this.currentSort = storage.getSetting('sortBy') || 'usage';
+        
+        // Update UI controls
+        this.updateViewControls();
+        this.updateSortControl();
+        
+        // Initial filter and display
+        this.filterAndSort();
+    }
+
+    setCategory(categoryId) {
+        this.currentCategory = categoryId;
+        this.currentPage = 1;
+        this.filterAndSort();
+        this.updateURL();
+    }
+
+    setSortBy(sortBy) {
+        this.currentSort = sortBy;
+        storage.setSetting('sortBy', sortBy);
+        this.filterAndSort();
+    }
+
+    setView(view) {
+        this.currentView = view;
+        storage.setSetting('view', view);
+        this.updateViewControls();
+        this.updateToolsDisplay();
+    }
+
+    updateViewControls() {
+        const gridBtn = Utils.$('#gridViewBtn');
+        const listBtn = Utils.$('#listViewBtn');
+        
+        if (gridBtn && listBtn) {
+            Utils.removeClass(gridBtn, 'active');
+            Utils.removeClass(listBtn, 'active');
+            
+            if (this.currentView === 'grid') {
+                Utils.addClass(gridBtn, 'active');
+            } else {
+                Utils.addClass(listBtn, 'active');
+            }
+        }
+
+        const toolsContainer = Utils.$('#toolsContainer');
+        if (toolsContainer) {
+            Utils.removeClass(toolsContainer, 'list-view');
+            if (this.currentView === 'list') {
+                Utils.addClass(toolsContainer, 'list-view');
+            }
+        }
+    }
+
+    updateSortControl() {
+        const sortSelect = Utils.$('#sortBy');
+        if (sortSelect) {
+            sortSelect.value = this.currentSort;
+        }
+    }
+
+    filterAndSort() {
+        this.filteredTools = [...this.tools];
+
+        // Filter by category
+        if (this.currentCategory) {
+            this.filteredTools = this.filteredTools.filter(tool => 
+                tool.category === this.currentCategory
+            );
+        }
+
+        // Sort tools
+        this.sortTools();
+
+        // Update display
+        this.updateToolsDisplay();
+        this.updateStats();
+    }
+
+    sortTools() {
+        switch (this.currentSort) {
+            case 'usage':
+                this.filteredTools.sort((a, b) => {
+                    const usageA = storage.getToolUsage(a.id);
+                    const usageB = storage.getToolUsage(b.id);
+                    return usageB - usageA;
+                });
+                break;
+            
+            case 'rating':
+                this.filteredTools.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+                break;
+            
+            case 'name':
+                this.filteredTools.sort((a, b) => a.name.localeCompare(b.name));
+                break;
+            
+            case 'date':
+                this.filteredTools.sort((a, b) => 
+                    new Date(b.dateAdded) - new Date(a.dateAdded)
+                );
+                break;
+            
+            default:
+                // Default sort by usage
+                this.filteredTools.sort((a, b) => {
+                    const usageA = storage.getToolUsage(a.id);
+                    const usageB = storage.getToolUsage(b.id);
+                    return usageB - usageA;
+                });
+        }
+    }
+
+    updateToolsDisplay() {
+        console.log('updateToolsDisplay called, filteredTools:', this.filteredTools.length);
+        console.log('Total tools:', this.tools.length);
+        
+        const container = Utils.$('#toolsContainer');
+        if (!container) {
+            console.error('Tools container not found! Looking for #toolsContainer');
+            console.log('Available containers:', document.querySelectorAll('[id*="tools"], [id*="Tools"]'));
+            return;
+        }
+
+        console.log('Tools container found:', container);
+        
+        // Remove loading placeholder if it exists
+        const placeholder = container.querySelector('#tools-placeholder');
+        if (placeholder) {
+            placeholder.remove();
+            console.log('Removed tools placeholder');
+        }
+
+        if (this.filteredTools.length === 0) {
+            console.log('No filtered tools, showing no tools message');
+            this.showNoTools(container);
+            return;
+        }
+
+        // Calculate pagination
+        const startIndex = (this.currentPage - 1) * this.toolsPerPage;
+        const endIndex = startIndex + this.toolsPerPage;
+        const toolsToShow = this.filteredTools.slice(startIndex, endIndex);
+
+        // Generate HTML
+        let html = '<div class="tools-grid">';
+        
+        toolsToShow.forEach((tool, index) => {
+            html += this.createToolCard(tool, startIndex + index);
+        });
+        
+        html += '</div>';
+
+        // Add pagination if needed
+        if (this.filteredTools.length > this.toolsPerPage) {
+            html += this.createPagination();
+        }
+
+        container.innerHTML = html;
+        
+        // Setup lazy loading
+        this.setupToolCardEvents();
+        Utils.lazyLoad('.tool-card.lazy-load');
+        
+        // Animate cards
+        this.animateToolCards();
+    }
+
+    createToolCard(tool, index) {
+        const usage = storage.getToolUsage(tool.id);
+        const isFavorite = storage.isFavoriteTool(tool.id);
+        const rating = tool.rating ? tool.rating.toFixed(1) : 'N/A';
+        
+        return `
+            <div class="tool-card lazy-load fade-in" 
+                 data-tool-id="${tool.id}" 
+                 style="animation-delay: ${index * 50}ms">
+                <div class="tool-header">
+                    <div class="tool-icon-card" style="background: ${this.getCategoryColor(tool.category)}">
+                        <i class="${tool.icon}"></i>
+                    </div>
+                    <div class="tool-info">
+                        <h3>${Utils.escapeHtml(tool.name)}</h3>
+                        <span class="tool-category">${Utils.capitalize(tool.category)}</span>
+                    </div>
+                    <div class="tool-actions">
+                        <button class="tool-action favorite-btn ${isFavorite ? 'active' : ''}" 
+                                data-tool-id="${tool.id}" 
+                                title="${isFavorite ? 'Remove from favorites' : 'Add to favorites'}">
+                            <i class="fas fa-heart"></i>
+                        </button>
+                        <button class="tool-action share-btn" 
+                                data-tool-id="${tool.id}" 
+                                title="Share tool">
+                            <i class="fas fa-share"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="tool-description">
+                    ${Utils.escapeHtml(tool.description)}
+                </div>
+                
+                ${tool.features && tool.features.length > 0 ? `
+                    <div class="tool-features">
+                        ${tool.features.slice(0, 3).map(feature => 
+                            `<span class="feature-tag">${Utils.escapeHtml(feature)}</span>`
+                        ).join('')}
+                        ${tool.features.length > 3 ? 
+                            `<span class="feature-tag more">+${tool.features.length - 3} more</span>` : ''}
+                    </div>
+                ` : ''}
+                
+                <div class="tool-footer">
+                    <div class="tool-rating">
+                        <i class="fas fa-star"></i>
+                        <span>${rating}</span>
+                        ${usage > 0 ? `<span class="usage-count">• Used ${usage}x</span>` : ''}
+                    </div>
+                    ${tool.badge ? `<span class="tool-badge">${Utils.escapeHtml(tool.badge)}</span>` : ''}
+                </div>
+                
+                ${tool.pricing && tool.pricing !== 'Free' ? `
+                    <div class="tool-pricing">
+                        <i class="fas fa-tag"></i>
+                        <span>${Utils.escapeHtml(tool.pricing)}</span>
+                    </div>
+                ` : ''}
+            </div>
+        `;
+    }
+
+    getCategoryColor(categoryId) {
+        const categoryColors = {
+            development: '#6366f1',
+            design: '#ec4899',
+            productivity: '#10b981',
+            utilities: '#f59e0b',
+            converters: '#8b5cf6',
+            generators: '#ef4444',
+            analyzers: '#06b6d4',
+            calculators: '#84cc16'
+        };
+        return categoryColors[categoryId] || '#6366f1';
+    }
+
+    createPagination() {
+        const totalPages = Math.ceil(this.filteredTools.length / this.toolsPerPage);
+        if (totalPages <= 1) return '';
+
+        let html = '<div class="pagination">';
+        
+        // Previous button
+        if (this.currentPage > 1) {
+            html += `<button class="pagination-btn" data-page="${this.currentPage - 1}">
+                <i class="fas fa-chevron-left"></i>
+            </button>`;
+        }
+        
+        // Page numbers
+        const startPage = Math.max(1, this.currentPage - 2);
+        const endPage = Math.min(totalPages, this.currentPage + 2);
+        
+        if (startPage > 1) {
+            html += `<button class="pagination-btn" data-page="1">1</button>`;
+            if (startPage > 2) {
+                html += '<span class="pagination-dots">...</span>';
+            }
+        }
+        
+        for (let i = startPage; i <= endPage; i++) {
+            html += `<button class="pagination-btn ${i === this.currentPage ? 'active' : ''}" 
+                     data-page="${i}">${i}</button>`;
+        }
+        
+        if (endPage < totalPages) {
+            if (endPage < totalPages - 1) {
+                html += '<span class="pagination-dots">...</span>';
+            }
+            html += `<button class="pagination-btn" data-page="${totalPages}">${totalPages}</button>`;
+        }
+        
+        // Next button
+        if (this.currentPage < totalPages) {
+            html += `<button class="pagination-btn" data-page="${this.currentPage + 1}">
+                <i class="fas fa-chevron-right"></i>
+            </button>`;
+        }
+        
+        html += '</div>';
+        return html;
+    }
+
+    showNoTools(container) {
+        const hasFilters = this.currentCategory || this.currentPage > 1;
+        const totalTools = this.tools.length;
+        
+        let message = 'No tools found';
+        let description = 'Try adjusting your filters or search terms';
+        
+        if (totalTools === 0) {
+            message = 'No tools available';
+            description = 'Tools are still being loaded or there was an error loading the data';
+        } else if (hasFilters) {
+            message = 'No tools match your filters';
+            description = `Showing 0 of ${totalTools} tools. Try clearing filters to see all tools.`;
+        }
+        
+        container.innerHTML = `
+            <div class="no-tools">
+                <div class="no-tools-icon">
+                    <i class="fas fa-${totalTools === 0 ? 'exclamation-triangle' : 'search'}"></i>
+                </div>
+                <h3>${message}</h3>
+                <p>${description}</p>
+                ${hasFilters ? `
+                    <button class="btn-secondary" onclick="window.toolsManager.clearFilters()">
+                        <i class="fas fa-refresh"></i>
+                        Clear Filters
+                    </button>
+                ` : totalTools === 0 ? `
+                    <button class="btn-secondary" onclick="window.toolsManager.refreshTools()">
+                        <i class="fas fa-refresh"></i>
+                        Reload Tools
+                    </button>
+                ` : ''}
+            </div>
+        `;
+    }
+
+    setupToolCardEvents() {
+        // Tool card clicks
+        const toolCards = Utils.$$('.tool-card');
+        toolCards.forEach(card => {
+            card.addEventListener('click', (e) => {
+                // Don't trigger if clicking on action buttons
+                if (e.target.closest('.tool-actions')) return;
+                
+                const toolId = card.dataset.toolId;
+                this.openTool(toolId);
+            });
+        });
+
+        // Favorite buttons
+        const favoriteButtons = Utils.$$('.favorite-btn');
+        favoriteButtons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const toolId = btn.dataset.toolId;
+                this.toggleFavorite(toolId, btn);
+            });
+        });
+
+        // Share buttons
+        const shareButtons = Utils.$$('.share-btn');
+        shareButtons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const toolId = btn.dataset.toolId;
+                this.shareTool(toolId);
+            });
+        });
+
+        // Pagination buttons
+        const paginationButtons = Utils.$$('.pagination-btn');
+        paginationButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const page = parseInt(btn.dataset.page);
+                this.goToPage(page);
+            });
+        });
+    }
+
+    animateToolCards() {
+        const cards = Utils.$$('.tool-card');
+        cards.forEach((card, index) => {
+            setTimeout(() => {
+                Utils.addClass(card, 'slide-up');
+            }, index * 50);
+        });
+    }
+
+    openTool(toolId) {
+        const tool = this.getToolById(toolId);
+        if (!tool) {
+            Utils.showError('Tool not found');
+            return;
+        }
+
+        // Track usage
+        storage.trackToolUsage(toolId);
+        
+        // Open tool link
+        if (tool.link && tool.link !== '#' && tool.link.trim() !== '') {
+            try {
+                window.open(tool.link, '_blank', 'noopener,noreferrer');
+                Utils.showSuccess(`Opening ${tool.name}...`);
+            } catch (error) {
+                console.error('Failed to open tool:', error);
+                Utils.showError(`Failed to open ${tool.name}`);
+            }
+        } else {
+            Utils.showError(`${tool.name} link is not available yet. Please check back later.`);
+        }
+        
+        // Update display to reflect new usage (with a small delay to avoid UI blocking)
+        setTimeout(() => {
+            this.updateToolsDisplay();
+        }, 100);
+    }
+
+    toggleFavorite(toolId, button) {
+        const tool = this.getToolById(toolId);
+        if (!tool) return;
+
+        const isFavorite = storage.isFavoriteTool(toolId);
+        
+        if (isFavorite) {
+            storage.removeFavoriteTool(toolId);
+            Utils.removeClass(button, 'active');
+            Utils.showSuccess(`Removed ${tool.name} from favorites`);
+        } else {
+            storage.addFavoriteTool(toolId);
+            Utils.addClass(button, 'active');
+            Utils.showSuccess(`Added ${tool.name} to favorites`);
+        }
+    }
+
+    async shareTool(toolId) {
+        const tool = this.getToolById(toolId);
+        if (!tool) return;
+
+        const shareData = {
+            title: tool.name,
+            text: tool.description,
+            url: tool.link !== '#' ? tool.link : window.location.href
+        };
+
+        try {
+            if (navigator.share) {
+                await navigator.share(shareData);
+                Utils.showSuccess('Shared successfully!');
+            } else {
+                // Fallback to clipboard
+                await Utils.copyToClipboard(shareData.url);
+                Utils.showSuccess('Link copied to clipboard!');
+            }
+        } catch (error) {
+            console.error('Error sharing:', error);
+            Utils.showError('Failed to share');
+        }
+    }
+
+    goToPage(page) {
+        this.currentPage = page;
+        this.updateToolsDisplay();
+        
+        // Scroll to top of tools
+        const toolsHeader = Utils.$('.tools-header');
+        if (toolsHeader) {
+            toolsHeader.scrollIntoView({ behavior: 'smooth' });
+        }
+    }
+
+    clearFilters() {
+        this.currentCategory = '';
+        this.currentPage = 1;
+        
+        // Reset UI controls
+        const categoryFilter = Utils.$('#categoryFilter');
+        if (categoryFilter) {
+            categoryFilter.value = '';
+        }
+        
+        this.filterAndSort();
+        this.updateURL();
+    }
+
+    updateStats() {
+        // Update tools count
+        const toolsCountEl = Utils.$('#toolsCount');
+        if (toolsCountEl) {
+            this.animateNumber(toolsCountEl, parseInt(toolsCountEl.textContent) || 0, this.tools.length);
+        }
+
+        // Update category count if on home page
+        const categoriesCountEl = Utils.$('#categoriesCount');
+        if (categoriesCountEl && window.categoriesManager) {
+            const categories = window.categoriesManager.getAllCategories();
+            this.animateNumber(categoriesCountEl, parseInt(categoriesCountEl.textContent) || 0, categories.length);
+        }
+    }
+
+    animateNumber(element, start, end, duration = 1000) {
+        const startTime = performance.now();
+        
+        function animate(currentTime) {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            
+            const current = Math.floor(start + (end - start) * progress);
+            element.textContent = current.toLocaleString();
+            
+            if (progress < 1) {
+                requestAnimationFrame(animate);
+            }
+        }
+        
+        requestAnimationFrame(animate);
+    }
+
+    updateURL() {
+        const params = new URLSearchParams();
+        
+        if (this.currentCategory) {
+            params.set('category', this.currentCategory);
+        }
+        
+        if (this.currentPage > 1) {
+            params.set('page', this.currentPage);
+        }
+        
+        const url = new URL(window.location);
+        url.search = params.toString();
+        window.history.replaceState({}, '', url);
+    }
+
+    showToolsPage(categoryId = null) {
+        console.log('showToolsPage called with categoryId:', categoryId);
+        
+        if (categoryId) {
+            this.setCategory(categoryId);
+        }
+        
+        // Ensure we have tools loaded
+        if (this.tools.length === 0) {
+            console.log('No tools available, forcing reload...');
+            this.loadTools().then(() => {
+                this.initializeView();
+            });
+        } else {
+            console.log('Tools available:', this.tools.length);
+            // Ensure view is updated
+            this.initializeView();
+        }
+        
+        // Navigate to tools page
+        window.app?.showPage('tools');
+    }
+
+    // Public API methods
+    getAllTools() {
+        return this.tools;
+    }
+
+    getToolById(id) {
+        return this.tools.find(tool => tool.id === id);
+    }
+
+    getToolsByCategory(categoryId) {
+        return this.tools.filter(tool => tool.category === categoryId);
+    }
+
+    getPopularTools(limit = 6) {
+        const mostUsed = storage.getMostUsedTools(limit);
+        return mostUsed.map(usage => this.getToolById(usage.toolId)).filter(Boolean);
+    }
+
+    getFavoriteTools() {
+        const favoriteIds = storage.getFavoriteTools();
+        return favoriteIds.map(id => this.getToolById(id)).filter(Boolean);
+    }
+
+    searchTools(query) {
+        const lowerQuery = query.toLowerCase();
+        return this.tools.filter(tool => 
+            tool.name.toLowerCase().includes(lowerQuery) ||
+            tool.description.toLowerCase().includes(lowerQuery) ||
+            tool.category.toLowerCase().includes(lowerQuery) ||
+            (tool.features && tool.features.some(feature => 
+                feature.toLowerCase().includes(lowerQuery)
+            ))
+        );
+    }
+
+    async refreshTools() {
+        this.isLoading = true;
+        
+        try {
+            // Clear cache and reload
+            storage.clearCache();
+            await this.loadTools();
+            this.filterAndSort();
+            Utils.showSuccess('Tools refreshed successfully!');
+        } catch (error) {
+            console.error('Failed to refresh tools:', error);
+            Utils.showError('Failed to refresh tools');
+        } finally {
+            this.isLoading = false;
+        }
+    }
+}
+
+// Initialize tools manager
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM loaded, initializing tools manager...');
+    window.toolsManager = new ToolsManager();
+    console.log('Tools manager created:', window.toolsManager);
+});
+
+// Add tools-specific styles
+const toolsStyles = `
+    .tool-actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .tool-action {
+        background: none;
+        border: none;
+        padding: 0.5rem;
+        border-radius: 0.375rem;
+        color: var(--text-muted);
+        cursor: pointer;
+        transition: all var(--transition-fast);
+        font-size: 0.875rem;
+    }
+
+    .tool-action:hover {
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+    }
+
+    .tool-action.active {
+        color: var(--primary-color);
+    }
+
+    .favorite-btn.active {
+        color: #ef4444;
+    }
+
+    .tool-features {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin: 1rem 0;
+    }
+
+    .feature-tag {
+        font-size: 0.75rem;
+        background: var(--bg-secondary);
+        color: var(--text-secondary);
+        padding: 0.25rem 0.5rem;
+        border-radius: 1rem;
+        white-space: nowrap;
+    }
+
+    .feature-tag.more {
+        background: var(--primary-color);
+        color: white;
+    }
+
+    .tool-pricing {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: var(--accent-color);
+        color: white;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.375rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+    .usage-count {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+    }
+
+    .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 2rem;
+        padding: 1rem;
+    }
+
+    .pagination-btn {
+        padding: 0.5rem 0.75rem;
+        border: 1px solid var(--border-color);
+        background: var(--bg-primary);
+        color: var(--text-secondary);
+        border-radius: 0.375rem;
+        cursor: pointer;
+        transition: all var(--transition-fast);
+        font-size: 0.875rem;
+        min-width: 40px;
+    }
+
+    .pagination-btn:hover {
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+    }
+
+    .pagination-btn.active {
+        background: var(--primary-color);
+        color: white;
+        border-color: var(--primary-color);
+    }
+
+    .pagination-dots {
+        color: var(--text-muted);
+        padding: 0 0.5rem;
+    }
+
+    .no-tools {
+        text-align: center;
+        padding: 3rem 1rem;
+        color: var(--text-secondary);
+    }
+
+    .no-tools-icon {
+        font-size: 4rem;
+        color: var(--text-muted);
+        margin-bottom: 1rem;
+    }
+
+    .no-tools h3 {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .no-tools p {
+        margin-bottom: 2rem;
+    }
+
+    @media (max-width: 768px) {
+        .tool-features {
+            gap: 0.25rem;
+        }
+        
+        .feature-tag {
+            font-size: 0.6875rem;
+            padding: 0.125rem 0.375rem;
+        }
+        
+        .pagination {
+            gap: 0.25rem;
+        }
+        
+        .pagination-btn {
+            padding: 0.375rem 0.5rem;
+            min-width: 32px;
+            font-size: 0.75rem;
+        }
+    }
+`;
+
+// Inject tools styles
+const toolsStyleSheet = document.createElement('style');
+toolsStyleSheet.textContent = toolsStyles;
+document.head.appendChild(toolsStyleSheet);

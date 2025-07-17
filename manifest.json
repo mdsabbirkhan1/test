@@ -1,0 +1,25 @@
+{
+    "name": "Tools Hub - Your Ultimate Tool Collection",
+    "short_name": "Tools Hub",
+    "description": "A comprehensive collection of useful tools for developers, designers, and everyone",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#6366f1",
+    "orientation": "portrait-primary",
+    "scope": "/",
+    "lang": "en",
+    "categories": ["productivity", "utilities", "developer"],
+    "icons": [
+        {
+            "src": "/icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "/icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}

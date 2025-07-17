@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A comprehensive collection of useful tools for developers, designers, and everyone">
+    <meta name="keywords" content="tools, utilities, web tools, developer tools, online tools">
+    <meta name="author" content="Tools Website">
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#6366f1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Tools Hub">
+    
+    <!-- PWA Icons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iOCIgZmlsbD0iIzYzNjZmMSIvPgo8cGF0aCBkPSJNOCAxMmg0djRIOHYtNHptNiAwaDR2NGgtNHYtNHptNiAwaDR2NGgtNHYtNHpNOCAxOGg0djRIOHYtNHptNiAwaDR2NGgtNHYtNHptNiAwaDR2NGgtNHYtNHoiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPgo=">
+    <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgdmlld0JveD0iMCAwIDE4MCAxODAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxODAiIGhlaWdodD0iMTgwIiByeD0iNDAiIGZpbGw9IiM2MzY2ZjEiLz4KPHN2ZyB4PSI0NSIgeT0iNDUiIHdpZHRoPSI5MCIgaGVpZ2h0PSI5MCIgdmlld0JveD0iMCAwIDkwIDkwIiBmaWxsPSJub25lIj4KPHBhdGggZD0iTTIwIDMwaDEwdjEwSDIwdi0xMHptMTUgMGgxMHYxMEgzNXYtMTB6bTE1IDBoMTB2MTBING41di0xMHpNMjAgNDVoMTB2MTBIMG50di0xMHptMTUgMGgxMHYxMEgzNXYtMTB6bTE1IDBoMTB2MTBING41di0xMHpNMjAgNjBoMTB2MTBIMG50di0xMHptMTUgMGgxMHYxMEgzNXYtMTB6bTE1IDBoMTB2MTBING41di0xMHoiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPgo8L3N2Zz4K">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <title>Tools Hub - Your Ultimate Tool Collection</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Install PWA Popup -->
+    <div id="installPrompt" class="install-prompt hidden">
+        <div class="install-content">
+            <i class="fas fa-download"></i>
+            <div class="install-text">
+                <h3>Install Tools Hub</h3>
+                <p>Get quick access to all tools offline</p>
+            </div>
+            <div class="install-actions">
+                <button id="installBtn" class="btn-install">Install</button>
+                <button id="dismissBtn" class="btn-dismiss">Later</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cookie Consent Popup -->
+    <div id="cookieConsent" class="cookie-consent hidden">
+        <div class="cookie-content">
+            <div class="cookie-text">
+                <h3>We use cookies</h3>
+                <p>We use cookies to enhance your experience and analyze website traffic.</p>
+            </div>
+            <div class="cookie-actions">
+                <button id="acceptCookies" class="btn-accept">Accept</button>
+                <button id="declineCookies" class="btn-decline">Decline</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Overlay -->
+    <div id="searchOverlay" class="search-overlay hidden">
+        <div class="search-container">
+            <div class="search-header">
+                <input type="text" id="searchInput" placeholder="Search tools..." autocomplete="off">
+                <button id="closeSearch" class="close-search">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="searchResults" class="search-results"></div>
+        </div>
+    </div>
+
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="loading-screen">
+        <div class="loading-spinner">
+            <i class="fas fa-tools"></i>
+        </div>
+        <p>Loading Tools Hub...</p>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <!-- Ad Banner -->
+        <div class="ad-banner">
+            <div class="ad-content">
+                <script async="async" data-cfasync="false" src="//pl22495470.profitablegatecpm.com/c7e74a9a67fb424040b1c44e9b29c914/invoke.js"></script>
+                <div id="container-c7e74a9a67fb424040b1c44e9b29c914"></div>
+            </div>
+        </div>
+        
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-brand">
+                    <i class="fas fa-tools"></i>
+                    <span>Tools Hub</span>
+                </div>
+                
+                <div class="nav-menu">
+                    <a href="#" class="nav-link active" data-page="home">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </a>
+                    <a href="#" class="nav-link" data-page="tools">
+                        <i class="fas fa-toolbox"></i>
+                        <span>Tools</span>
+                    </a>
+                </div>
+                
+                <div class="nav-actions">
+                    <button id="searchBtn" class="action-btn">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    <button id="themeToggle" class="action-btn">
+                        <i class="fas fa-sun"></i>
+                    </button>
+                    <button id="menuToggle" class="action-btn mobile-only">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Home Page -->
+        <div id="homePage" class="page active">
+            <!-- Hero Section -->
+            <section class="hero">
+                <div class="hero-container">
+                    <div class="hero-content">
+                        <h1 class="hero-title">
+                            Your Ultimate
+                            <span class="gradient-text">Tool Collection</span>
+                        </h1>
+                        <p class="hero-description">
+                            Discover thousands of carefully curated tools to boost your productivity, 
+                            enhance your creativity, and streamline your workflow.
+                        </p>
+                        <div class="hero-actions">
+                            <button class="btn-primary" data-page="tools">
+                                <i class="fas fa-rocket"></i>
+                                Explore Tools
+                            </button>
+                            <button class="btn-secondary" id="openSearch">
+                                <i class="fas fa-search"></i>
+                                Quick Search
+                            </button>
+                            <button class="btn-secondary" onclick="debugTools()" style="margin-left: 10px; background: #dc3545;">
+                                <i class="fas fa-bug"></i>
+                                Debug Tools
+                            </button>
+                        </div>
+                    </div>
+                    <div class="hero-visual">
+                        <div class="floating-tools">
+                            <div class="tool-icon"><i class="fas fa-code"></i></div>
+                            <div class="tool-icon"><i class="fas fa-palette"></i></div>
+                            <div class="tool-icon"><i class="fas fa-chart-line"></i></div>
+                            <div class="tool-icon"><i class="fas fa-camera"></i></div>
+                            <div class="tool-icon"><i class="fas fa-file-text"></i></div>
+                            <div class="tool-icon"><i class="fas fa-globe"></i></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Stats Section -->
+            <section class="stats">
+                <div class="stats-container">
+                    <div class="stat-item">
+                        <div class="stat-number" id="toolsCount">0</div>
+                        <div class="stat-label">Total Tools</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="categoriesCount">0</div>
+                        <div class="stat-label">Categories</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="usersCount">50K+</div>
+                        <div class="stat-label">Happy Users</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">24/7</div>
+                        <div class="stat-label">Available</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Popular Tools Section -->
+            <section class="popular-tools">
+                <div class="section-container">
+                    <div class="section-header">
+                        <h2>Most Popular Tools</h2>
+                        <p>Tools that our users love the most</p>
+                    </div>
+                    <div id="popularToolsGrid" class="tools-grid">
+                        <!-- Popular tools will be loaded here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Categories Preview -->
+            <section class="categories-preview">
+                <div class="section-container">
+                    <div class="section-header">
+                        <h2>Explore Categories</h2>
+                        <p>Find the perfect tool for your needs</p>
+                    </div>
+                    <div id="categoriesGrid" class="categories-grid">
+                        <!-- Categories will be loaded here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Features Section -->
+            <section class="features">
+                <div class="section-container">
+                    <div class="section-header">
+                        <h2>Why Choose Tools Hub?</h2>
+                        <p>Everything you need in one place</p>
+                    </div>
+                    <div class="features-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-rocket"></i>
+                            </div>
+                            <h3>Lightning Fast</h3>
+                            <p>Optimized performance with lazy loading and caching for instant access to tools</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-mobile-alt"></i>
+                            </div>
+                            <h3>PWA Ready</h3>
+                            <p>Install as an app on any device and use tools offline with full PWA capabilities</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-heart"></i>
+                            </div>
+                            <h3>Personalized</h3>
+                            <p>Your most used tools automatically appear at the top for quick access</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <h3>Privacy Focused</h3>
+                            <p>All data stored locally in your browser with full control over your information</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-search"></i>
+                            </div>
+                            <h3>Smart Search</h3>
+                            <p>Intelligent search with filters and suggestions to find exactly what you need</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-moon"></i>
+                            </div>
+                            <h3>Dark Mode</h3>
+                            <p>Beautiful dark and light themes that adapt to your preference and system settings</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Tools Page -->
+        <div id="toolsPage" class="page">
+            <!-- Tools Header -->
+            <section class="tools-header">
+                <div class="section-container">
+                    <h1>All Tools</h1>
+                    <p>Discover and organize your favorite tools</p>
+                    
+                    <!-- Filters -->
+                    <div class="tools-filters">
+                        <div class="filter-group">
+                            <label for="categoryFilter">Category:</label>
+                            <select id="categoryFilter">
+                                <option value="">All Categories</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="sortBy">Sort by:</label>
+                            <select id="sortBy">
+                                <option value="usage">Most Used</option>
+                                <option value="rating">Highest Rated</option>
+                                <option value="name">Name A-Z</option>
+                                <option value="date">Date Added</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <button id="gridViewBtn" class="view-btn active">
+                                <i class="fas fa-th"></i>
+                            </button>
+                            <button id="listViewBtn" class="view-btn">
+                                <i class="fas fa-list"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tools Content -->
+            <section class="tools-content">
+                <div class="section-container">
+                    <div id="toolsContainer" class="tools-container">
+                        <!-- Tools will be loaded here -->
+                        <div id="tools-placeholder" style="padding: 40px; text-align: center; background: #f8f9fa; border-radius: 8px; margin: 20px 0;">
+                            <i class="fas fa-tools" style="font-size: 3rem; color: #6366f1; margin-bottom: 15px;"></i>
+                            <h3>Loading Tools...</h3>
+                            <p>Please wait while we load your tools. If this message persists, click the "Debug Tools" button on the home page.</p>
+                            <button onclick="window.location.reload()" style="background: #6366f1; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; margin-top: 15px;">
+                                Reload Page
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-brand">
+                        <i class="fas fa-tools"></i>
+                        <span>Tools Hub</span>
+                    </div>
+                    <p>Your ultimate destination for productivity tools and utilities.</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#" data-page="home">Home</a></li>
+                        <li><a href="#" data-page="tools">All Tools</a></li>
+                        <li><a href="#" id="aboutLink">About</a></li>
+                        <li><a href="#" id="contactLink">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Categories</h3>
+                    <ul id="footerCategories">
+                        <!-- Categories will be loaded here -->
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Connect</h3>
+                    <div class="social-links">
+                        <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" title="GitHub"><i class="fab fa-github"></i></a>
+                        <a href="#" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" title="Discord"><i class="fab fa-discord"></i></a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 Tools Hub. All rights reserved.</p>
+                <div class="footer-links">
+                    <a href="#" id="privacyLink">Privacy Policy</a>
+                    <a href="#" id="termsLink">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/storage.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/search.js"></script>
+    <script src="js/tools.js"></script>
+    <script src="js/categories.js"></script>
+    <script src="js/app.js"></script>
+    
+    <script>
+        // Debugging functions
+        function debugTools() {
+            console.log('=== TOOLS DEBUG ===');
+            console.log('Window objects:');
+            console.log('- storage:', !!window.storage);
+            console.log('- toolsManager:', !!window.toolsManager);
+            console.log('- categoriesManager:', !!window.categoriesManager);
+            console.log('- app:', !!window.app);
+            
+            if (window.toolsManager) {
+                console.log('ToolsManager details:');
+                console.log('- isInitialized:', window.toolsManager.isInitialized);
+                console.log('- tools count:', window.toolsManager.tools?.length || 0);
+                console.log('- filteredTools count:', window.toolsManager.filteredTools?.length || 0);
+                console.log('- tools:', window.toolsManager.tools);
+                
+                // Force tools reload
+                console.log('Forcing tools reload...');
+                window.toolsManager.loadTools().then(() => {
+                    console.log('Tools reloaded, count:', window.toolsManager.tools.length);
+                    window.toolsManager.filterAndSort();
+                    
+                    // Switch to tools page
+                    if (window.app) {
+                        window.app.showPage('tools');
+                    }
+                });
+            } else {
+                console.error('ToolsManager not available!');
+                alert('ToolsManager not available! Check the console for errors.');
+            }
+            
+            // Check tools container
+            const container = document.getElementById('toolsContainer');
+            console.log('Tools container:', container);
+            if (container) {
+                console.log('Container content:', container.innerHTML.length > 0 ? 'Has content' : 'Empty');
+            }
+        }
+        
+        // Add global debugging info
+        window.getDebugInfo = function() {
+            return {
+                storage: !!window.storage,
+                toolsManager: !!window.toolsManager,
+                categoriesManager: !!window.categoriesManager,
+                app: !!window.app,
+                toolsCount: window.toolsManager?.tools?.length || 0,
+                currentPage: window.app?.currentPage || 'unknown'
+            };
+        };
+    </script>
+</body>
+</html>

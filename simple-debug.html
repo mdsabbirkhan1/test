@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Debug - Tools Page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .page { display: none; }
+        .page.active { display: block; }
+        .nav-link { padding: 10px; margin: 5px; background: #007bff; color: white; text-decoration: none; border-radius: 5px; }
+        .nav-link.active { background: #0056b3; }
+        .tools-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin-top: 20px; }
+        .tool-card { border: 1px solid #ddd; border-radius: 8px; padding: 15px; background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .debug { background: #f8f9fa; padding: 10px; margin: 10px 0; border-left: 4px solid #007bff; }
+        .error { border-left-color: #dc3545; background: #f8d7da; }
+        .success { border-left-color: #28a745; background: #d4edda; }
+    </style>
+</head>
+<body>
+    <div id="debug-log"></div>
+    
+    <nav>
+        <a href="#" class="nav-link active" data-page="home">Home</a>
+        <a href="#" class="nav-link" data-page="tools">Tools</a>
+    </nav>
+    
+    <div id="homePage" class="page active">
+        <h1>Home Page</h1>
+        <p>Click "Tools" to see the tools page.</p>
+        <button onclick="showToolsPage()">Go to Tools</button>
+    </div>
+    
+    <div id="toolsPage" class="page">
+        <h1>Tools Page</h1>
+        <div id="toolsContainer" class="tools-grid">
+            <!-- Tools will be loaded here -->
+        </div>
+    </div>
+    
+    <script>
+        const debugLog = document.getElementById('debug-log');
+        
+        function log(message, type = 'debug') {
+            const div = document.createElement('div');
+            div.className = `debug ${type}`;
+            div.innerHTML = `<strong>${new Date().toLocaleTimeString()}:</strong> ${message}`;
+            debugLog.appendChild(div);
+            console.log(message);
+        }
+        
+        function showPage(pageId) {
+            log(`Switching to page: ${pageId}`);
+            
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+                log(`Hiding page: ${page.id}`);
+            });
+            
+            // Show target page
+            const targetPage = document.getElementById(pageId + 'Page');
+            if (targetPage) {
+                targetPage.classList.add('active');
+                log(`Showing page: ${targetPage.id}`, 'success');
+                
+                if (pageId === 'tools') {
+                    loadTools();
+                }
+            } else {
+                log(`Page not found: ${pageId}Page`, 'error');
+            }
+            
+            // Update navigation
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('data-page') === pageId) {
+                    link.classList.add('active');
+                }
+            });
+        }
+        
+        function showToolsPage() {
+            showPage('tools');
+        }
+        
+        async function loadTools() {
+            log('Loading tools...');
+            const container = document.getElementById('toolsContainer');
+            
+            try {
+                const response = await fetch('./data/sample-tools.json');
+                log(`Fetch response: ${response.status}`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const tools = await response.json();
+                log(`Loaded ${tools.length} tools`, 'success');
+                
+                // Clear container
+                container.innerHTML = '';
+                
+                // Add tools
+                tools.forEach((tool, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'tool-card';
+                    card.innerHTML = `
+                        <h3><i class="${tool.icon}"></i> ${tool.name}</h3>
+                        <p><strong>Category:</strong> ${tool.category}</p>
+                        <p>${tool.description}</p>
+                        <p><strong>Link:</strong> <a href="${tool.link}" target="_blank" onclick="logToolClick('${tool.id}')">${tool.link}</a></p>
+                        <p><strong>Rating:</strong> ${tool.rating || 'N/A'}</p>
+                        ${tool.badge ? `<span style="background: #007bff; color: white; padding: 2px 8px; border-radius: 12px; font-size: 12px;">${tool.badge}</span>` : ''}
+                    `;
+                    container.appendChild(card);
+                });
+                
+                log(`Displayed ${tools.length} tool cards`, 'success');
+                
+            } catch (error) {
+                log(`Error loading tools: ${error.message}`, 'error');
+                container.innerHTML = `<p style="color: red;">Error loading tools: ${error.message}</p>`;
+            }
+        }
+        
+        function logToolClick(toolId) {
+            log(`Tool clicked: ${toolId}`, 'success');
+        }
+        
+        // Setup navigation
+        document.addEventListener('click', (e) => {
+            if (e.target.matches('[data-page]') || e.target.closest('[data-page]')) {
+                e.preventDefault();
+                const pageId = e.target.getAttribute('data-page') || e.target.closest('[data-page]').getAttribute('data-page');
+                showPage(pageId);
+            }
+        });
+        
+        log('Debug page initialized');
+    </script>
+</body>
+</html>
