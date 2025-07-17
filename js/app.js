@@ -296,8 +296,20 @@ class App {
     handlePageChange(page) {
         switch (page) {
             case 'tools':
-                if (window.toolsManager && !window.toolsManager.isInitialized) {
-                    window.toolsManager.initializeView();
+                console.log('Page changed to tools, toolsManager available:', !!window.toolsManager);
+                if (window.toolsManager) {
+                    console.log('ToolsManager initialized:', window.toolsManager.isInitialized);
+                    console.log('ToolsManager tools count:', window.toolsManager.tools?.length || 0);
+                    
+                    if (!window.toolsManager.isInitialized) {
+                        console.log('Initializing tools manager view...');
+                        window.toolsManager.initializeView();
+                    } else {
+                        console.log('Forcing tools display update...');
+                        window.toolsManager.filterAndSort();
+                    }
+                } else {
+                    console.error('ToolsManager not available when switching to tools page');
                 }
                 break;
             case 'home':

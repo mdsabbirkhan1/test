@@ -147,6 +147,10 @@
                                 <i class="fas fa-search"></i>
                                 Quick Search
                             </button>
+                            <button class="btn-secondary" onclick="debugTools()" style="margin-left: 10px; background: #dc3545;">
+                                <i class="fas fa-bug"></i>
+                                Debug Tools
+                            </button>
                         </div>
                     </div>
                     <div class="hero-visual">
@@ -370,5 +374,59 @@
     <script src="js/tools.js"></script>
     <script src="js/categories.js"></script>
     <script src="js/app.js"></script>
+    
+    <script>
+        // Debugging functions
+        function debugTools() {
+            console.log('=== TOOLS DEBUG ===');
+            console.log('Window objects:');
+            console.log('- storage:', !!window.storage);
+            console.log('- toolsManager:', !!window.toolsManager);
+            console.log('- categoriesManager:', !!window.categoriesManager);
+            console.log('- app:', !!window.app);
+            
+            if (window.toolsManager) {
+                console.log('ToolsManager details:');
+                console.log('- isInitialized:', window.toolsManager.isInitialized);
+                console.log('- tools count:', window.toolsManager.tools?.length || 0);
+                console.log('- filteredTools count:', window.toolsManager.filteredTools?.length || 0);
+                console.log('- tools:', window.toolsManager.tools);
+                
+                // Force tools reload
+                console.log('Forcing tools reload...');
+                window.toolsManager.loadTools().then(() => {
+                    console.log('Tools reloaded, count:', window.toolsManager.tools.length);
+                    window.toolsManager.filterAndSort();
+                    
+                    // Switch to tools page
+                    if (window.app) {
+                        window.app.showPage('tools');
+                    }
+                });
+            } else {
+                console.error('ToolsManager not available!');
+                alert('ToolsManager not available! Check the console for errors.');
+            }
+            
+            // Check tools container
+            const container = document.getElementById('toolsContainer');
+            console.log('Tools container:', container);
+            if (container) {
+                console.log('Container content:', container.innerHTML.length > 0 ? 'Has content' : 'Empty');
+            }
+        }
+        
+        // Add global debugging info
+        window.getDebugInfo = function() {
+            return {
+                storage: !!window.storage,
+                toolsManager: !!window.toolsManager,
+                categoriesManager: !!window.categoriesManager,
+                app: !!window.app,
+                toolsCount: window.toolsManager?.tools?.length || 0,
+                currentPage: window.app?.currentPage || 'unknown'
+            };
+        };
+    </script>
 </body>
 </html>

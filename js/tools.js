@@ -10,6 +10,7 @@ class ToolsManager {
         this.currentSort = 'usage';
         this.currentView = 'grid';
         this.isLoading = false;
+        this.isInitialized = false;
         console.log('ToolsManager initialized, calling init()...');
         this.init();
     }
@@ -23,11 +24,23 @@ class ToolsManager {
             this.setupEventListeners();
             console.log('Initializing view...');
             this.initializeView();
+            this.isInitialized = true;
             console.log('ToolsManager initialization complete');
         } catch (error) {
             console.error('Failed to initialize tools manager:', error);
             Utils.showError('Failed to load tools');
+            // Try fallback initialization
+            this.initializeFallback();
         }
+    }
+
+    initializeFallback() {
+        console.log('Initializing with fallback tools...');
+        this.tools = this.getFallbackTools();
+        this.setupEventListeners();
+        this.initializeView();
+        this.isInitialized = true;
+        console.log('Fallback initialization complete');
     }
 
     getFallbackTools() {
@@ -48,9 +61,9 @@ class ToolsManager {
             {
                 "id": "color-picker-fallback",
                 "name": "Color Picker",
-                "category": "design",
+                "category": "design", 
                 "icon": "fas fa-palette",
-                "description": "Generate beautiful color palettes",
+                "description": "Pick colors and create palettes",
                 "link": "https://coolors.co/",
                 "rating": 4.6,
                 "badge": "New",
@@ -62,7 +75,7 @@ class ToolsManager {
                 "id": "password-generator-fallback",
                 "name": "Password Generator",
                 "category": "utilities",
-                "icon": "fas fa-key",
+                "icon": "fas fa-key", 
                 "description": "Generate secure passwords",
                 "link": "https://passwordsgenerator.net/",
                 "rating": 4.9,
@@ -70,39 +83,62 @@ class ToolsManager {
                 "features": ["Custom length", "Character sets"],
                 "pricing": "Free",
                 "dateAdded": "2024-01-10"
+            },
+            {
+                "id": "qr-generator-fallback",
+                "name": "QR Code Generator",
+                "category": "generators",
+                "icon": "fas fa-qrcode",
+                "description": "Create QR codes for various purposes",
+                "link": "https://qr-code-generator.com/",
+                "rating": 4.7,
+                "badge": "Popular",
+                "features": ["Multiple formats", "Custom colors"],
+                "pricing": "Free",
+                "dateAdded": "2024-01-25"
             }
         ];
     }
 
     async loadTools() {
-        // Try to load from cache first
-        const cachedTools = storage.getCachedData('tools');
-        if (cachedTools && storage.isCacheValid()) {
-            this.tools = cachedTools;
-            console.log(`Loaded ${this.tools.length} tools from cache`);
-            return;
-        }
-
-        // Load from sample data (in real app, this would be an API call)
+        this.isLoading = true;
+        console.log('Starting to load tools...');
+        
         try {
-            console.log('Fetching tools from data/sample-tools.json...');
+            // Try loading from cache first
+            const cachedTools = storage.getCachedData('tools');
+            if (cachedTools && cachedTools.length > 0) {
+                console.log('Loading tools from cache:', cachedTools.length);
+                this.tools = cachedTools;
+                this.isLoading = false;
+                return;
+            }
+
+            // Fetch from server
+            console.log('Fetching tools from server...');
             const response = await fetch('./data/sample-tools.json');
+            console.log('Fetch response:', response.status, response.statusText);
+            
             if (!response.ok) {
                 throw new Error(`HTTP ${response.status}: ${response.statusText}`);
             }
             
-            this.tools = await response.json();
+            const tools = await response.json();
+            console.log('Raw tools data:', tools);
             
-            // Validate tools data
-            if (!Array.isArray(this.tools)) {
-                throw new Error('Tools data is not an array');
+            if (!Array.isArray(tools) || tools.length === 0) {
+                throw new Error('No valid tools found in response');
             }
+            
+            this.tools = tools;
+            this.isLoading = false;
             
             // Cache the tools
             storage.setCachedData('tools', this.tools);
             
             console.log(`Successfully loaded ${this.tools.length} tools:`, this.tools.map(t => t.name));
         } catch (error) {
+            this.isLoading = false;
             console.error('Error loading tools:', error);
             Utils.showError(`Failed to load tools: ${error.message}`);
             // Fallback to hardcoded tools if sample data fails
@@ -270,11 +306,16 @@ class ToolsManager {
 
     updateToolsDisplay() {
         console.log('updateToolsDisplay called, filteredTools:', this.filteredTools.length);
-        const container = Utils.$('#toolsContainer .tools-grid') || Utils.$('#toolsContainer');
+        console.log('Total tools:', this.tools.length);
+        
+        const container = Utils.$('#toolsContainer');
         if (!container) {
-            console.log('Tools container not found');
+            console.error('Tools container not found! Looking for #toolsContainer');
+            console.log('Available containers:', document.querySelectorAll('[id*="tools"], [id*="Tools"]'));
             return;
         }
+
+        console.log('Tools container found:', container);
 
         if (this.filteredTools.length === 0) {
             console.log('No filtered tools, showing no tools message');
@@ -671,8 +712,22 @@ class ToolsManager {
     }
 
     showToolsPage(categoryId = null) {
+        console.log('showToolsPage called with categoryId:', categoryId);
+        
         if (categoryId) {
             this.setCategory(categoryId);
+        }
+        
+        // Ensure we have tools loaded
+        if (this.tools.length === 0) {
+            console.log('No tools available, forcing reload...');
+            this.loadTools().then(() => {
+                this.initializeView();
+            });
+        } else {
+            console.log('Tools available:', this.tools.length);
+            // Ensure view is updated
+            this.initializeView();
         }
         
         // Navigate to tools page
