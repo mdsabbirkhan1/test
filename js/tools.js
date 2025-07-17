@@ -28,24 +28,32 @@ class ToolsManager {
         const cachedTools = storage.getCachedData('tools');
         if (cachedTools && storage.isCacheValid()) {
             this.tools = cachedTools;
+            console.log(`Loaded ${this.tools.length} tools from cache`);
             return;
         }
 
         // Load from sample data (in real app, this would be an API call)
         try {
+            console.log('Fetching tools from data/sample-tools.json...');
             const response = await fetch('./data/sample-tools.json');
             if (!response.ok) {
-                throw new Error('Failed to fetch tools data');
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
             }
             
             this.tools = await response.json();
             
+            // Validate tools data
+            if (!Array.isArray(this.tools)) {
+                throw new Error('Tools data is not an array');
+            }
+            
             // Cache the tools
             storage.setCachedData('tools', this.tools);
             
-            console.log(`Loaded ${this.tools.length} tools`);
+            console.log(`Successfully loaded ${this.tools.length} tools:`, this.tools.map(t => t.name));
         } catch (error) {
             console.error('Error loading tools:', error);
+            Utils.showError(`Failed to load tools: ${error.message}`);
             // Fallback to empty array if sample data fails
             this.tools = [];
         }
@@ -372,17 +380,38 @@ class ToolsManager {
     }
 
     showNoTools(container) {
+        const hasFilters = this.currentCategory || this.currentPage > 1;
+        const totalTools = this.tools.length;
+        
+        let message = 'No tools found';
+        let description = 'Try adjusting your filters or search terms';
+        
+        if (totalTools === 0) {
+            message = 'No tools available';
+            description = 'Tools are still being loaded or there was an error loading the data';
+        } else if (hasFilters) {
+            message = 'No tools match your filters';
+            description = `Showing 0 of ${totalTools} tools. Try clearing filters to see all tools.`;
+        }
+        
         container.innerHTML = `
             <div class="no-tools">
                 <div class="no-tools-icon">
-                    <i class="fas fa-search"></i>
+                    <i class="fas fa-${totalTools === 0 ? 'exclamation-triangle' : 'search'}"></i>
                 </div>
-                <h3>No tools found</h3>
-                <p>Try adjusting your filters or search terms</p>
-                <button class="btn-secondary" onclick="window.toolsManager.clearFilters()">
-                    <i class="fas fa-refresh"></i>
-                    Clear Filters
-                </button>
+                <h3>${message}</h3>
+                <p>${description}</p>
+                ${hasFilters ? `
+                    <button class="btn-secondary" onclick="window.toolsManager.clearFilters()">
+                        <i class="fas fa-refresh"></i>
+                        Clear Filters
+                    </button>
+                ` : totalTools === 0 ? `
+                    <button class="btn-secondary" onclick="window.toolsManager.refreshTools()">
+                        <i class="fas fa-refresh"></i>
+                        Reload Tools
+                    </button>
+                ` : ''}
             </div>
         `;
     }
@@ -441,21 +470,31 @@ class ToolsManager {
 
     openTool(toolId) {
         const tool = this.getToolById(toolId);
-        if (!tool) return;
+        if (!tool) {
+            Utils.showError('Tool not found');
+            return;
+        }
 
         // Track usage
         storage.trackToolUsage(toolId);
         
         // Open tool link
-        if (tool.link && tool.link !== '#') {
-            window.open(tool.link, '_blank');
-            Utils.showSuccess(`Opened ${tool.name}`);
+        if (tool.link && tool.link !== '#' && tool.link.trim() !== '') {
+            try {
+                window.open(tool.link, '_blank', 'noopener,noreferrer');
+                Utils.showSuccess(`Opening ${tool.name}...`);
+            } catch (error) {
+                console.error('Failed to open tool:', error);
+                Utils.showError(`Failed to open ${tool.name}`);
+            }
         } else {
-            Utils.showError('Tool link not available');
+            Utils.showError(`${tool.name} link is not available yet. Please check back later.`);
         }
         
-        // Update display to reflect new usage
-        this.updateToolsDisplay();
+        // Update display to reflect new usage (with a small delay to avoid UI blocking)
+        setTimeout(() => {
+            this.updateToolsDisplay();
+        }, 100);
     }
 
     toggleFavorite(toolId, button) {
