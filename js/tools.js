@@ -1,6 +1,7 @@
 // Tools Management System
 class ToolsManager {
     constructor() {
+        console.log('ToolsManager constructor called');
         this.tools = [];
         this.filteredTools = [];
         this.currentPage = 1;
@@ -9,18 +10,68 @@ class ToolsManager {
         this.currentSort = 'usage';
         this.currentView = 'grid';
         this.isLoading = false;
+        console.log('ToolsManager initialized, calling init()...');
         this.init();
     }
 
     async init() {
+        console.log('ToolsManager.init() called');
         try {
+            console.log('Loading tools...');
             await this.loadTools();
+            console.log('Setting up event listeners...');
             this.setupEventListeners();
+            console.log('Initializing view...');
             this.initializeView();
+            console.log('ToolsManager initialization complete');
         } catch (error) {
             console.error('Failed to initialize tools manager:', error);
             Utils.showError('Failed to load tools');
         }
+    }
+
+    getFallbackTools() {
+        return [
+            {
+                "id": "json-formatter-fallback",
+                "name": "JSON Formatter",
+                "category": "development",
+                "icon": "fas fa-code",
+                "description": "Format and validate JSON data online",
+                "link": "https://jsonformatter.org/",
+                "rating": 4.8,
+                "badge": "Popular",
+                "features": ["Syntax highlighting", "Error detection"],
+                "pricing": "Free",
+                "dateAdded": "2024-01-15"
+            },
+            {
+                "id": "color-picker-fallback",
+                "name": "Color Picker",
+                "category": "design",
+                "icon": "fas fa-palette",
+                "description": "Generate beautiful color palettes",
+                "link": "https://coolors.co/",
+                "rating": 4.6,
+                "badge": "New",
+                "features": ["Color palettes", "Export options"],
+                "pricing": "Free",
+                "dateAdded": "2024-01-20"
+            },
+            {
+                "id": "password-generator-fallback",
+                "name": "Password Generator",
+                "category": "utilities",
+                "icon": "fas fa-key",
+                "description": "Generate secure passwords",
+                "link": "https://passwordsgenerator.net/",
+                "rating": 4.9,
+                "badge": "Essential",
+                "features": ["Custom length", "Character sets"],
+                "pricing": "Free",
+                "dateAdded": "2024-01-10"
+            }
+        ];
     }
 
     async loadTools() {
@@ -54,8 +105,9 @@ class ToolsManager {
         } catch (error) {
             console.error('Error loading tools:', error);
             Utils.showError(`Failed to load tools: ${error.message}`);
-            // Fallback to empty array if sample data fails
-            this.tools = [];
+            // Fallback to hardcoded tools if sample data fails
+            this.tools = this.getFallbackTools();
+            console.log('Using fallback tools:', this.tools.length);
         }
     }
 
@@ -217,10 +269,15 @@ class ToolsManager {
     }
 
     updateToolsDisplay() {
+        console.log('updateToolsDisplay called, filteredTools:', this.filteredTools.length);
         const container = Utils.$('#toolsContainer .tools-grid') || Utils.$('#toolsContainer');
-        if (!container) return;
+        if (!container) {
+            console.log('Tools container not found');
+            return;
+        }
 
         if (this.filteredTools.length === 0) {
+            console.log('No filtered tools, showing no tools message');
             this.showNoTools(container);
             return;
         }
@@ -677,7 +734,9 @@ class ToolsManager {
 
 // Initialize tools manager
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM loaded, initializing tools manager...');
     window.toolsManager = new ToolsManager();
+    console.log('Tools manager created:', window.toolsManager);
 });
 
 // Add tools-specific styles

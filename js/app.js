@@ -28,19 +28,32 @@ class App {
 
     async initializeApp() {
         // Wait for all managers to be ready
-        const maxWait = 5000; // 5 seconds
+        const maxWait = 10000; // 10 seconds
         const checkInterval = 100; // 100ms
         let waited = 0;
 
+        console.log('Waiting for managers to initialize...');
+        
         while ((!window.storage || !window.toolsManager || !window.categoriesManager) && waited < maxWait) {
+            if (waited % 1000 === 0) { // Log every second
+                console.log(`Waiting... Storage: ${!!window.storage}, Tools: ${!!window.toolsManager}, Categories: ${!!window.categoriesManager}`);
+            }
             await new Promise(resolve => setTimeout(resolve, checkInterval));
             waited += checkInterval;
         }
 
         if (waited >= maxWait) {
+            console.error('Timeout waiting for managers to initialize');
+            console.log('Available:', {
+                storage: !!window.storage,
+                toolsManager: !!window.toolsManager,
+                categoriesManager: !!window.categoriesManager
+            });
             throw new Error('Timeout waiting for managers to initialize');
         }
 
+        console.log('All managers ready, initializing app...');
+        
         // Initialize popular tools display
         this.displayPopularTools();
     }
@@ -294,15 +307,28 @@ class App {
     }
 
     displayPopularTools() {
+        console.log('displayPopularTools called');
         const container = Utils.$('#popularToolsGrid');
-        if (!container || !window.toolsManager) return;
+        if (!container) {
+            console.log('Popular tools container not found');
+            return;
+        }
+        if (!window.toolsManager) {
+            console.log('ToolsManager not available');
+            return;
+        }
 
+        console.log('Getting popular tools...');
         const popularTools = window.toolsManager.getPopularTools(6);
+        console.log('Popular tools:', popularTools);
         
         if (popularTools.length === 0) {
             // Show some random tools if no usage data
+            console.log('No popular tools, getting random tools...');
             const allTools = window.toolsManager.getAllTools();
+            console.log('All tools:', allTools.length);
             const randomTools = Utils.shuffle(allTools).slice(0, 6);
+            console.log('Random tools:', randomTools);
             this.renderPopularTools(container, randomTools);
         } else {
             this.renderPopularTools(container, popularTools);
@@ -547,7 +573,16 @@ class App {
 
 // Initialize app when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM ready, initializing app...');
     window.app = new App();
+});
+
+// Also try window.onload as a fallback
+window.addEventListener('load', () => {
+    if (!window.app) {
+        console.log('Window loaded but no app, creating fallback...');
+        window.app = new App();
+    }
 });
 
 // Add global error handler
