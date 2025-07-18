@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToolHub - Your Ultimate Tools Collection</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="description" content="Discover amazing tools for productivity, development, design and more">
+    <meta name="theme-color" content="#3b82f6">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192x192.png">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Cookie Consent Banner -->
+    <div id="cookieConsent" class="cookie-consent hidden">
+        <div class="cookie-content">
+            <div class="cookie-text">
+                <i class="fas fa-cookie-bite"></i>
+                <span>We use cookies to enhance your experience and improve our services.</span>
+            </div>
+            <div class="cookie-actions">
+                <button id="acceptCookies" class="btn-accept">Accept All</button>
+                <button id="declineCookies" class="btn-decline">Decline</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PWA Install Banner -->
+    <div id="pwaInstallBanner" class="pwa-banner hidden">
+        <div class="pwa-content">
+            <i class="fas fa-download"></i>
+            <span>Install ToolHub for quick access to all tools!</span>
+            <button id="installPWA" class="btn-install">Install</button>
+            <button id="dismissPWA" class="btn-dismiss">&times;</button>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <!-- Ad Banner Space -->
+        <div class="ad-banner" id="topAdBanner">
+            <div class="ad-placeholder">
+                <!-- AdsTerra Banner Ad Space -->
+                <script type="text/javascript">
+                    // AdsTerra banner ad code will go here
+                    // Example placeholder
+                </script>
+                <div class="ad-demo">Advertisement Space - AdsTerra Banner</div>
+            </div>
+        </div>
+
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-brand">
+                    <i class="fas fa-tools"></i>
+                    <span>ToolHub</span>
+                </div>
+                
+                <div class="nav-controls">
+                    <button id="searchToggle" class="nav-btn" title="Search">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    <button id="themeToggle" class="nav-btn" title="Toggle Theme">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <button id="menuToggle" class="nav-btn mobile-only" title="Menu">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Search Overlay -->
+    <div id="searchOverlay" class="search-overlay hidden">
+        <div class="search-container">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search tools..." autocomplete="off">
+                <button id="clearSearch" class="clear-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="searchResults" class="search-results"></div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <h1>Discover Amazing Tools</h1>
+                <p>Your ultimate collection of productivity, development, and creative tools</p>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <span class="stat-number" id="totalTools">0</span>
+                        <span class="stat-label">Tools</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number" id="totalCategories">0</span>
+                        <span class="stat-label">Categories</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Categories Filter -->
+        <section class="filters">
+            <div class="filter-container">
+                <h2>Categories</h2>
+                <div id="categoryFilters" class="category-filters">
+                    <button class="category-btn active" data-category="all">
+                        <i class="fas fa-th-large"></i>
+                        All Tools
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Most Used Tools -->
+        <section id="mostUsedSection" class="section hidden">
+            <div class="section-header">
+                <h2><i class="fas fa-star"></i> Most Used Tools</h2>
+                <p>Your frequently accessed tools</p>
+            </div>
+            <div id="mostUsedTools" class="tools-grid"></div>
+        </section>
+
+        <!-- Tools Grid -->
+        <section class="section">
+            <div class="section-header">
+                <h2 id="sectionTitle"><i class="fas fa-tools"></i> All Tools</h2>
+                <div class="section-controls">
+                    <select id="sortSelect" class="sort-select">
+                        <option value="name">Sort by Name</option>
+                        <option value="rating">Sort by Rating</option>
+                        <option value="dateAdded">Sort by Date Added</option>
+                        <option value="usage">Sort by Usage</option>
+                    </select>
+                </div>
+            </div>
+            <div id="toolsGrid" class="tools-grid">
+                <!-- Tools will be loaded here -->
+            </div>
+            <div id="loadingSpinner" class="loading-spinner hidden">
+                <i class="fas fa-spinner fa-spin"></i>
+                <span>Loading tools...</span>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3><i class="fas fa-tools"></i> ToolHub</h3>
+                <p>Your ultimate tools collection</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#categories">Categories</a></li>
+                    <li><a href="#about">About</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Connect</h4>
+                <div class="social-links">
+                    <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" title="GitHub"><i class="fab fa-github"></i></a>
+                    <a href="#" title="Discord"><i class="fab fa-discord"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 ToolHub. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/app.js"></script>
+    <script src="js/tools-data.js"></script>
+    <script src="js/pwa.js"></script>
+</body>
+</html>
