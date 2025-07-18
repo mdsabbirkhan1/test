@@ -1,0 +1,40 @@
+{
+  "name": "toolhub",
+  "version": "1.0.0",
+  "description": "Ultimate Tools Collection - A beautiful PWA for discovering amazing tools",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx http-server . -p 8000 -c-1 --cors",
+    "dev": "npx live-server --port=8000 --no-browser --cors",
+    "build": "echo 'No build process needed - static files ready for deployment'",
+    "serve:python": "python3 server.py",
+    "test:pwa": "npx pwa-test ."
+  },
+  "keywords": [
+    "tools",
+    "pwa",
+    "progressive-web-app",
+    "productivity",
+    "development",
+    "design",
+    "utilities"
+  ],
+  "author": "ToolHub",
+  "license": "MIT",
+  "homepage": ".",
+  "repository": {
+    "type": "git",
+    "url": "."
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "devDependencies": {},
+  "dependencies": {},
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead",
+    "not ie 11"
+  ]
+}
