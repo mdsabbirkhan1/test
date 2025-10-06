@@ -1,0 +1,50 @@
+[
+  {
+    "id": "2",
+    "name": "2048",
+    "description": "Join the numbers to get to the 2048 tile! A classic puzzle game.",
+    "url": "https://html5.gamedistribution.com/f5ddb866a9bc4b238be60e93aac83c31/",
+    "icon": "https://img.gamedistribution.com/f5ddb866a9bc4b238be60e93aac83c31-512x512.jpeg",
+    "category": "puzzle"
+  },
+  {
+    "id": "4",
+    "name": "Stack Ball",
+    "description": "Smash and blast through revolving helix platforms to reach the end!",
+    "url": "https://html5.gamedistribution.com/5d6ba92fc76349ac93af4c7c6bb5c3e8/",
+    "icon": "https://img.gamedistribution.com/5d6ba92fc76349ac93af4c7c6bb5c3e8-512x512.jpeg",
+    "category": "arcade"
+  },
+  {
+    "id": "7",
+    "name": "Bubble Shooter",
+    "description": "Pop bubbles by matching three or more of the same color!",
+    "url": "https://html5.gamedistribution.com/e7c7f5e3c7a64d3fa9b1c8d0f2e4a3b1/",
+    "icon": "https://img.gamedistribution.com/e7c7f5e3c7a64d3fa9b1c8d0f2e4a3b1-512x512.jpeg",
+    "category": "puzzle"
+  },
+  {
+    "id": "10",
+    "name": "Crossy Road",
+    "description": "Why did the chicken cross the road? Play to find out!",
+    "url": "https://html5.gamedistribution.com/c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8/",
+    "icon": "https://img.gamedistribution.com/c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8-512x512.jpeg",
+    "category": "arcade"
+  },
+  {
+    "id": "14",
+    "name": "Cut the Rope",
+    "description": "Feed candy to the little monster by cutting ropes!",
+    "url": "https://html5.gamedistribution.com/g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2/",
+    "icon": "https://img.gamedistribution.com/g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2-512x512.jpeg",
+    "category": "puzzle"
+  },
+  {
+    "id": "18",
+    "name": "Flappy Bird",
+    "description": "Navigate the bird through pipes. Simple but challenging!",
+    "url": "https://html5.gamedistribution.com/k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6/",
+    "icon": "https://img.gamedistribution.com/k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6-512x512.jpeg",
+    "category": "arcade"
+  }
+]
