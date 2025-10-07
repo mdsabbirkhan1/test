@@ -1,0 +1,29 @@
+[
+  {
+    "id": "offline-1",
+    "name": "Snake Game",
+    "description": "Classic snake game - eat food and grow longer without hitting yourself!",
+    "url": "offline-games/snake/index.html",
+    "offlinePath": "offline-games/snake/index.html",
+    "icon": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Crect fill='%2310b981' width='400' height='300'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='60' fill='white'%3E🐍%3C/text%3E%3C/svg%3E",
+    "category": "arcade"
+  },
+  {
+    "id": "offline-2",
+    "name": "2048 Puzzle",
+    "description": "Combine tiles with the same number to reach 2048!",
+    "url": "offline-games/2048/index.html",
+    "offlinePath": "offline-games/2048/index.html",
+    "icon": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Crect fill='%23edc22e' width='400' height='300'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='60' fill='white'%3E2048%3C/text%3E%3C/svg%3E",
+    "category": "puzzle"
+  },
+  {
+    "id": "offline-3",
+    "name": "Tic Tac Toe",
+    "description": "Play the classic X and O game against the computer!",
+    "url": "offline-games/tic-tac-toe/index.html",
+    "offlinePath": "offline-games/tic-tac-toe/index.html",
+    "icon": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Crect fill='%233b82f6' width='400' height='300'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='60' fill='white'%3E❌⭕%3C/text%3E%3C/svg%3E",
+    "category": "strategy"
+  }
+]
