@@ -1,0 +1,162 @@
+[
+  {
+    "id": "1",
+    "name": "Subway Surfers",
+    "description": "Run through the subway tracks and dodge oncoming trains in this endless runner game!",
+    "url": "https://subway-surfers.io/",
+    "icon": "https://img.gamedistribution.com/bb65344d29f74da1bd1f41500d8b1dc2.jpg",
+    "category": "action"
+  },
+  {
+    "id": "2",
+    "name": "Candy Crush",
+    "description": "Match colorful candies to clear the board and progress through hundreds of levels.",
+    "url": "https://www.king.com/game/candycrush",
+    "icon": "https://img.gamedistribution.com/1234567890abcdef1234567890abcdef.jpg",
+    "category": "puzzle"
+  },
+  {
+    "id": "3",
+    "name": "Moto X3M",
+    "description": "Perform crazy stunts on your motorcycle through challenging obstacle courses!",
+    "url": "https://motox3m.io/",
+    "icon": "https://img.gamedistribution.com/fedcba0987654321fedcba0987654321.jpg",
+    "category": "racing"
+  },
+  {
+    "id": "4",
+    "name": "Fireboy and Watergirl",
+    "description": "Help Fireboy and Watergirl navigate through temples filled with puzzles and obstacles.",
+    "url": "https://fireboy-watergirl.io/",
+    "icon": "https://img.gamedistribution.com/a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6.jpg",
+    "category": "puzzle"
+  },
+  {
+    "id": "5",
+    "name": "Stickman Hook",
+    "description": "Swing through levels like Spider-Man using your grappling hook!",
+    "url": "https://stickman-hook.io/",
+    "icon": "https://img.gamedistribution.com/q1w2e3r4t5y6u7i8o9p0a1s2d3f4g5h6.jpg",
+    "category": "action"
+  },
+  {
+    "id": "6",
+    "name": "Shell Shockers",
+    "description": "Enter the arena as an egg soldier and battle other players in this multiplayer FPS!",
+    "url": "https://shellshock.io/",
+    "icon": "https://img.gamedistribution.com/z1x2c3v4b5n6m7a8s9d0f1g2h3j4k5l6.jpg",
+    "category": "action"
+  },
+  {
+    "id": "7",
+    "name": "2048",
+    "description": "Combine numbered tiles to reach the 2048 tile in this addictive puzzle game.",
+    "url": "https://play2048.co/",
+    "icon": "https://img.gamedistribution.com/1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p.jpg",
+    "category": "puzzle"
+  },
+  {
+    "id": "8",
+    "name": "Temple Run 2",
+    "description": "Run, jump, and slide your way through ancient temple ruins while being chased!",
+    "url": "https://temple-run-2.io/",
+    "icon": "https://img.gamedistribution.com/7q8w9e0r1t2y3u4i5o6p7a8s9d0f1g2h.jpg",
+    "category": "action"
+  },
+  {
+    "id": "9",
+    "name": "Slope",
+    "description": "Control a ball rolling down a colorful 3D slope at high speeds!",
+    "url": "https://slope-game.io/",
+    "icon": "https://img.gamedistribution.com/3h4j5k6l7z8x9c0v1b2n3m4a5s6d7f8g.jpg",
+    "category": "racing"
+  },
+  {
+    "id": "10",
+    "name": "Among Us",
+    "description": "Find the impostor among your crewmates or sabotage the spaceship as the impostor!",
+    "url": "https://among-us.io/",
+    "icon": "https://img.gamedistribution.com/9g0h1j2k3l4z5x6c7v8b9n0m1q2w3e4r.jpg",
+    "category": "strategy"
+  },
+  {
+    "id": "11",
+    "name": "Crossy Road",
+    "description": "Navigate through traffic and obstacles in this modern take on classic arcade games.",
+    "url": "https://crossy-road.io/",
+    "icon": "https://img.gamedistribution.com/5t6y7u8i9o0p1a2s3d4f5g6h7j8k9l0z.jpg",
+    "category": "arcade"
+  },
+  {
+    "id": "12",
+    "name": "Fruit Ninja",
+    "description": "Slice fruits with ninja precision while avoiding bombs in this fast-paced game!",
+    "url": "https://fruit-ninja.io/",
+    "icon": "https://img.gamedistribution.com/x1c2v3b4n5m6q7w8e9r0t1y2u3i4o5p6.jpg",
+    "category": "arcade"
+  },
+  {
+    "id": "13",
+    "name": "Geometry Dash",
+    "description": "Jump and fly through danger in this rhythm-based action platformer!",
+    "url": "https://geometry-dash.io/",
+    "icon": "https://img.gamedistribution.com/a6s7d8f9g0h1j2k3l4z5x6c7v8b9n0m1.jpg",
+    "category": "arcade"
+  },
+  {
+    "id": "14",
+    "name": "Hill Climb Racing",
+    "description": "Drive your vehicle across bumpy terrain and perform amazing tricks!",
+    "url": "https://hill-climb-racing.io/",
+    "icon": "https://img.gamedistribution.com/q2w3e4r5t6y7u8i9o0p1a2s3d4f5g6h7.jpg",
+    "category": "racing"
+  },
+  {
+    "id": "15",
+    "name": "Pac-Man",
+    "description": "Navigate mazes while eating dots and avoiding ghosts in this classic arcade game.",
+    "url": "https://pacman-game.io/",
+    "icon": "https://img.gamedistribution.com/j8k9l0z1x2c3v4b5n6m7q8w9e0r1t2y3.jpg",
+    "category": "arcade"
+  },
+  {
+    "id": "16",
+    "name": "Agar.io",
+    "description": "Consume smaller cells to grow bigger while avoiding being eaten by larger ones!",
+    "url": "https://agar.io/",
+    "icon": "https://img.gamedistribution.com/u4i5o6p7a8s9d0f1g2h3j4k5l6z7x8c9.jpg",
+    "category": "strategy"
+  },
+  {
+    "id": "17",
+    "name": "Bubble Shooter",
+    "description": "Match and pop colorful bubbles to clear the board in this relaxing puzzle game.",
+    "url": "https://bubble-shooter.io/",
+    "icon": "https://img.gamedistribution.com/v0b1n2m3q4w5e6r7t8y9u0i1o2p3a4s5.jpg",
+    "category": "puzzle"
+  },
+  {
+    "id": "18",
+    "name": "Stack Ball",
+    "description": "Smash through colorful platforms to reach the bottom in this 3D arcade game!",
+    "url": "https://stack-ball.io/",
+    "icon": "https://img.gamedistribution.com/d6f7g8h9j0k1l2z3x4c5v6b7n8m9q0w1.jpg",
+    "category": "arcade"
+  },
+  {
+    "id": "19",
+    "name": "Slither.io",
+    "description": "Control a snake and consume glowing orbs to grow longer than other players!",
+    "url": "https://slither.io/",
+    "icon": "https://img.gamedistribution.com/e2r3t4y5u6i7o8p9a0s1d2f3g4h5j6k7.jpg",
+    "category": "strategy"
+  },
+  {
+    "id": "20",
+    "name": "Tunnel Rush",
+    "description": "Navigate through a twisting 3D tunnel filled with obstacles at high speed!",
+    "url": "https://tunnel-rush.io/",
+    "icon": "https://img.gamedistribution.com/l8z9x0c1v2b3n4m5q6w7e8r9t0y1u2i3.jpg",
+    "category": "racing"
+  }
+]
