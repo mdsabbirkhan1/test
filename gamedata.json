@@ -1,0 +1,146 @@
+[
+  {
+    "id": "1",
+    "name": "Subway Surfers",
+    "description": "Run, dodge trains, and collect coins in this endless runner adventure!",
+    "url": "https://html5.gamedistribution.com/rvvASMiM/c71e6e2b5d3741abb4e47e83c49c0d94/index.html",
+    "icon": "https://img.gamedistribution.com/c71e6e2b5d3741abb4e47e83c49c0d94-512x512.jpeg",
+    "category": "action"
+  },
+  {
+    "id": "2",
+    "name": "Temple Run 2",
+    "description": "Run for your life in this thrilling endless runner game!",
+    "url": "https://html5.gamedistribution.com/5a85e7028e2e4a6fa7ad6a7f0d5e1b8c/index.html",
+    "icon": "https://img.gamedistribution.com/5a85e7028e2e4a6fa7ad6a7f0d5e1b8c-512x512.jpeg",
+    "category": "action"
+  },
+  {
+    "id": "3",
+    "name": "Bubble Shooter",
+    "description": "Pop colorful bubbles and clear the board in this classic puzzle game!",
+    "url": "https://html5.gamedistribution.com/8b5e2c6f9d1a3e4b7c8d9e0f1a2b3c4d/index.html",
+    "icon": "https://img.gamedistribution.com/bb65344d29f74da1bd1f41500d8b1dc2.jpg",
+    "category": "puzzle"
+  },
+  {
+    "id": "4",
+    "name": "Candy Crush Saga",
+    "description": "Match candies and solve sweet puzzles in this addictive game!",
+    "url": "https://html5.gamedistribution.com/1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d/index.html",
+    "icon": "https://img.gamedistribution.com/4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a-512x512.jpeg",
+    "category": "puzzle"
+  },
+  {
+    "id": "5",
+    "name": "Soccer Stars",
+    "description": "Compete in fast-paced soccer matches against players worldwide!",
+    "url": "https://html5.gamedistribution.com/a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6/index.html",
+    "icon": "https://img.gamedistribution.com/1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b-512x512.jpeg",
+    "category": "sports"
+  },
+  {
+    "id": "6",
+    "name": "8 Ball Pool",
+    "description": "Master the pool table and become the ultimate 8 ball champion!",
+    "url": "https://html5.gamedistribution.com/b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7/index.html",
+    "icon": "https://img.gamedistribution.com/2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c-512x512.jpeg",
+    "category": "sports"
+  },
+  {
+    "id": "7",
+    "name": "Fruit Ninja",
+    "description": "Slice fruits with precision and avoid the bombs!",
+    "url": "https://html5.gamedistribution.com/c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8/index.html",
+    "icon": "https://img.gamedistribution.com/3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d-512x512.jpeg",
+    "category": "arcade"
+  },
+  {
+    "id": "8",
+    "name": "Crossy Road",
+    "description": "Help the chicken cross the road in this challenging arcade game!",
+    "url": "https://html5.gamedistribution.com/d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9/index.html",
+    "icon": "https://img.gamedistribution.com/4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e-512x512.jpeg",
+    "category": "arcade"
+  },
+  {
+    "id": "9",
+    "name": "Hill Climb Racing",
+    "description": "Drive through challenging terrains and reach new distances!",
+    "url": "https://html5.gamedistribution.com/e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0/index.html",
+    "icon": "https://img.gamedistribution.com/5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f-512x512.jpeg",
+    "category": "racing"
+  },
+  {
+    "id": "10",
+    "name": "Asphalt 9",
+    "description": "Experience high-speed racing with stunning graphics and exotic cars!",
+    "url": "https://html5.gamedistribution.com/f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1/index.html",
+    "icon": "https://img.gamedistribution.com/6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a-512x512.jpeg",
+    "category": "racing"
+  },
+  {
+    "id": "11",
+    "name": "Zombie Shooter",
+    "description": "Survive the zombie apocalypse with powerful weapons and strategy!",
+    "url": "https://html5.gamedistribution.com/a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2/index.html",
+    "icon": "https://img.gamedistribution.com/7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b-512x512.jpeg",
+    "category": "action"
+  },
+  {
+    "id": "12",
+    "name": "Chess Master",
+    "description": "Challenge your mind with classic chess against AI or friends!",
+    "url": "https://html5.gamedistribution.com/b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3/index.html",
+    "icon": "https://img.gamedistribution.com/8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c-512x512.jpeg",
+    "category": "strategy"
+  },
+  {
+    "id": "13",
+    "name": "Tower Defense",
+    "description": "Build towers and defend your kingdom from enemy waves!",
+    "url": "https://html5.gamedistribution.com/c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4/index.html",
+    "icon": "https://img.gamedistribution.com/9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d-512x512.jpeg",
+    "category": "strategy"
+  },
+  {
+    "id": "14",
+    "name": "Cooking Fever",
+    "description": "Cook delicious meals and manage your restaurant empire!",
+    "url": "https://html5.gamedistribution.com/d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5/index.html",
+    "icon": "https://img.gamedistribution.com/0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e-512x512.jpeg",
+    "category": "simulation"
+  },
+  {
+    "id": "15",
+    "name": "Farm Simulator",
+    "description": "Build and manage your dream farm with crops and animals!",
+    "url": "https://html5.gamedistribution.com/e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6/index.html",
+    "icon": "https://img.gamedistribution.com/1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f-512x512.jpeg",
+    "category": "simulation"
+  },
+  {
+    "id": "16",
+    "name": "Tetris",
+    "description": "The classic block-stacking puzzle game that never gets old!",
+    "url": "https://html5.gamedistribution.com/f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7/index.html",
+    "icon": "https://img.gamedistribution.com/2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a-512x512.jpeg",
+    "category": "puzzle"
+  },
+  {
+    "id": "17",
+    "name": "Parkour Master",
+    "description": "Perform amazing parkour stunts and reach the finish line!",
+    "url": "https://html5.gamedistribution.com/a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8/index.html",
+    "icon": "https://img.gamedistribution.com/3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b-512x512.jpeg",
+    "category": "action"
+  },
+  {
+    "id": "18",
+    "name": "Basketball Stars",
+    "description": "Show off your basketball skills in this competitive sports game!",
+    "url": "https://html5.gamedistribution.com/b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9/index.html",
+    "icon": "https://img.gamedistribution.com/4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c-512x512.jpeg",
+    "category": "sports"
+  }
+]

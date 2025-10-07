@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Play free online games instantly! Thousands of games across all categories - action, puzzle, sports, and more. Works offline with PWA support.">
+    <meta name="keywords" content="online games, free games, browser games, play games online, gaming platform, PWA games, offline games">
+    <meta name="author" content="Gaming Platform">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Gaming Platform - Play Free Online Games">
+    <meta property="og:description" content="Play thousands of free online games instantly. Works offline!">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="">
+    <meta property="og:image" content="">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Gaming Platform - Play Free Online Games">
+    <meta name="twitter:description" content="Play thousands of free online games instantly. Works offline!">
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#6366f1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Gaming Platform">
+    
+    <title>Gaming Platform - Play Free Online Games</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>">
+    
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- PWA Install Banner -->
+    <div id="pwa-install-banner" class="pwa-banner hidden">
+        <div class="pwa-banner-content">
+            <span class="pwa-icon">🎮</span>
+            <div class="pwa-text">
+                <strong>Install Gaming Platform</strong>
+                <p>Get quick access and play offline games!</p>
+            </div>
+            <div class="pwa-actions">
+                <button id="pwa-install-btn" class="pwa-btn-install">Install</button>
+                <button id="pwa-close-btn" class="pwa-btn-close">×</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <!-- Logo -->
+                <div class="logo">
+                    <span class="logo-icon">🎮</span>
+                    <span class="logo-text">Gaming<span class="logo-highlight">Hub</span></span>
+                </div>
+                
+                <!-- Search Bar -->
+                <div class="search-container">
+                    <input 
+                        type="text" 
+                        id="search-input" 
+                        class="search-input" 
+                        placeholder="Search games..."
+                        autocomplete="off"
+                    >
+                    <span class="search-icon">🔍</span>
+                </div>
+                
+                <!-- Theme Toggle -->
+                <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Connection Status -->
+    <div id="connection-status" class="connection-status hidden">
+        <span class="status-icon">📡</span>
+        <span class="status-text">You're offline - showing offline games</span>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Category Bar -->
+            <section class="category-section">
+                <h2 class="section-title">Categories</h2>
+                <div class="category-container">
+                    <button class="category-nav category-nav-left" id="scroll-left">‹</button>
+                    <div class="category-scroll" id="category-scroll">
+                        <button class="category-btn active" data-category="all">All Games</button>
+                        <!-- Categories will be dynamically added here -->
+                    </div>
+                    <button class="category-nav category-nav-right" id="scroll-right">›</button>
+                </div>
+            </section>
+
+            <!-- Recently Played Games -->
+            <section id="recent-games-section" class="games-section hidden">
+                <h2 class="section-title">
+                    <span class="title-icon">🕐</span>
+                    Recently Played
+                </h2>
+                <div id="recent-games-grid" class="games-grid">
+                    <!-- Recently played games will be added here -->
+                </div>
+            </section>
+
+            <!-- All Games -->
+            <section class="games-section">
+                <h2 class="section-title" id="games-section-title">
+                    <span class="title-icon">🎯</span>
+                    All Games
+                </h2>
+                <div id="games-grid" class="games-grid">
+                    <!-- Games will be dynamically added here -->
+                </div>
+            </section>
+
+            <!-- No Results Message -->
+            <div id="no-results" class="no-results hidden">
+                <div class="no-results-icon">🔍</div>
+                <h3>No games found</h3>
+                <p>Try searching with different keywords</p>
+            </div>
+
+            <!-- Loading Spinner -->
+            <div id="loading-spinner" class="loading-spinner">
+                <div class="spinner"></div>
+                <p>Loading games...</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Game Modal (Full-screen) -->
+    <div id="game-modal" class="game-modal hidden">
+        <div class="modal-header">
+            <div class="modal-title-container">
+                <h2 id="modal-game-title" class="modal-game-title"></h2>
+                <p id="modal-game-category" class="modal-game-category"></p>
+            </div>
+            <div class="modal-controls">
+                <button id="fullscreen-btn" class="modal-btn" aria-label="Fullscreen">
+                    <span>⛶</span>
+                </button>
+                <button id="close-modal-btn" class="modal-btn modal-close" aria-label="Close">
+                    <span>×</span>
+                </button>
+            </div>
+        </div>
+        <div class="modal-content">
+            <iframe 
+                id="game-iframe" 
+                class="game-iframe"
+                allowfullscreen
+                allow="gamepad; autoplay; fullscreen"
+            ></iframe>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 GamingHub. Play responsibly. All games are property of their respective owners.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+    <script src="pwa-install.js"></script>
+</body>
+</html>
